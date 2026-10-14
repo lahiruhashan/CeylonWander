@@ -1,0 +1,31 @@
+services:
+  # 1. FastAPI Backend API
+  - type: web
+    name: ceylonwander-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    envVars:
+      - key: PORT
+        value: 8001
+      - key: CORS_ORIGINS
+        value: '["*"]'
+    healthCheckPath: /health
+
+  # 2. Next.js Web Frontend
+  - type: web
+    name: ceylonwander-web
+    runtime: node
+    rootDir: web
+    plan: free
+    region: singapore
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: ceylonwander-api
+          property: host
+
