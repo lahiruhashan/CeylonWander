@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CeylonWander — The Resplendent Isle | Immersive Travel Discovery</title>
+  <meta name="description" content="A cinematic, immersive travel discovery engine engineered for Sri Lanka's real topography, switchbacks, dual-monsoon climates, and hidden heritage.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================================================
+       1. CSS VARIABLES & SYSTEM THEME
+       ========================================================================== */
+    :root {
+      --bg-dark: #05140e;
+      --bg-card: rgba(14, 38, 28, 0.65);
+      --bg-glass: rgba(255, 255, 255, 0.05);
+      --border-glass: rgba(255, 255, 255, 0.12);
+      --border-emerald: rgba(52, 211, 153, 0.25);
+      
+      --emerald-glow: #10b981;
+      --emerald-dark: #064e3b;
+      --emerald-bright: #34d399;
+      --amber-gold: #f59e0b;
+      --amber-glow: #fbbf24;
+      --ocean-blue: #0284c7;
+      --ocean-cyan: #38bdf8;
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-emerald: #6ee7b7;
+      
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-mono: 'Space Grotesk', monospace;
+      
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+      
+      --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="golden"] {
+      --bg-dark: #1a1005;
+      --bg-card: rgba(43, 26, 8, 0.7);
+      --emerald-glow: #f59e0b;
+      --border-emerald: rgba(245, 158, 11, 0.3);
+      --text-emerald: #fcd34d;
+    }
+
+    [data-theme="monsoon"] {
+      --bg-dark: #071724;
+      --bg-card: rgba(10, 32, 53, 0.75);
+      --emerald-glow: #38bdf8;
+      --border-emerald: rgba(56, 189, 248, 0.3);
+      --text-emerald: #7dd3fc;
+    }
+
+    [data-theme="night"] {
+      --bg-dark: #030712;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --emerald-glow: #a855f7;
+      --border-emerald: rgba(168, 85, 247, 0.3);
+      --text-emerald: #c084fc;
+    }
+
+    /* ==========================================================================
+       2. BASE RESET & GLOBAL STYLES
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      color-scheme: dark;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+      transition: background-color 0.8s ease;
+    }
+
+    /* Custom Selection */
+    ::selection {
+      background: rgba(16, 185, 129, 0.35);
+      color: #fff;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(52, 211, 153, 0.3);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--emerald-glow);
+    }
+
+    /* ==========================================================================
+       3. BACKGROUND CANVAS & ATMOSPHERIC EFFECTS
+       ========================================================================== */
+    #ambient-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.85;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+      transition: all 1s ease;
+    }
+
+    .glow-1 {
+      top: -10vw;
+      left: -10vw;
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, var(--emerald-glow) 0%, transparent 70%);
+    }
+
+    .glow-2 {
+      bottom: 10vh;
+      right: -10vw;
+      width: 45vw;
+      height: 45vw;
+      background: radial-gradient(circle, var(--amber-gold) 0%, transparent 70%);
+      opacity: 0.2;
+    }
+
+    /* ==========================================================================
+       4. NAVIGATION BAR
+       ========================================================================== */
+    .cinematic-nav {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 40px);
+      max-width: 1240px;
+      padding: 12px 24px;
+      background: rgba(6, 28, 20, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-full);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      transition: var(--transition);
+    }
+
+    .cinematic-nav:hover {
+      border-color: var(--border-emerald);
+      box-shadow: 0 12px 50px rgba(16, 185, 129, 0.15);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .logo-badge {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #10b981, #047857);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 14px;
+      color: white;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-badge::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.4) 50%, transparent 60%);
+      animation: logoShine 4s infinite linear;
+    }
+
+    @keyframes logoShine {
+      0% { transform: translateX(-100%); }
+      20%, 100% { transform: translateX(100%); }
+    }
+
+    .logo-title {
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logo-sub {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-emerald);
+      display: block;
+      margin-top: -2px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--emerald-glow);
+      transition: var(--transition);
+      border-radius: 2px;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Audio Soundscape Pill */
+    .sound-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      padding: 7px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .sound-btn:hover {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: var(--border-emerald);
+      transform: scale(1.03);
+    }
+
+    .sound-btn.active {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: var(--emerald-glow);
+      color: #6ee7b7;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .sound-pulse {
+      width: 7px;
+      height: 7px;
+      background: #10b981;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .sound-btn.active .sound-pulse {
+      animation: pulseAnim 1.2s infinite ease-in-out;
+    }
+
+    @keyframes pulseAnim {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.6); opacity: 0.4; }
+    }
+
+    .cta-explore-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #032b1c;
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .cta-explore-btn:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 6px 28px rgba(16, 185, 129, 0.6);
+      color: #000;
+    }
+
+    /* ==========================================================================
+       5. HERO SECTION: CINEMATIC PARALLAX & TYPOGRAPHY
+       ========================================================================== */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 140px 24px 80px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .hero-badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .live-chip {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid var(--border-emerald);
+      color: var(--text-emerald);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+      animation: fadeIn 0.8s ease;
+    }
+
+    .time-chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(40px, 7.5vw, 92px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      max-width: 1080px;
+      background: linear-gradient(180deg, #ffffff 30%, #cbd5e1 75%, #64748b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .hero-title .highlight {
+      background: linear-gradient(135deg, #34d399 20%, #10b981 50%, #f59e0b 95%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-style: italic;
+    }
+
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 20px);
+      color: #94a3b8;
+      max-width: 720px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .hero-sub strong {
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 56px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #032317;
+      padding: 16px 36px;
+      border-radius: var(--radius-full);
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 14px 40px rgba(16, 185, 129, 0.6);
+      color: #000;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: #fff;
+      padding: 16px 30px;
+      border-radius: var(--radius-full);
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+      transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-emerald);
+      transform: translateY(-2px);
+    }
+
+    /* Ambient Environment Switcher Bar */
+    .environment-picker {
+      background: rgba(14, 38, 28, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-full);
+      padding: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .env-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .env-btn:hover {
+      color: #fff;
+    }
+
+    .env-btn.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ==========================================================================
+       6. IMMERSIVE BIOME SHOWCASE (3D CARD PERSPECTIVE)
+       ========================================================================== */
+    .section-wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 100px 24px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-badge {
+      color: var(--text-emerald);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(32px, 4.5vw, 52px);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .biome-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      perspective: 1000px;
+    }
+
+    .biome-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 380px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .biome-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, rgba(52, 211, 153, 0.15), transparent 70%);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .biome-card:hover {
+      transform: translateY(-8px) rotateX(2deg);
+      border-color: var(--border-emerald);
+      box-shadow: 0 20px 50px rgba(16, 185, 129, 0.2);
+    }
+
+    .biome-card:hover::before {
+      opacity: 1;
+    }
+
+    .biome-top {
+      position: relative;
+      z-index: 2;
+    }
+
+    .biome-icon-wrap {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 20px;
+      transition: var(--transition);
+    }
+
+    .biome-card:hover .biome-icon-wrap {
+      transform: scale(1.1) rotate(-4deg);
+      background: rgba(16, 185, 129, 0.2);
+      border-color: var(--emerald-glow);
+    }
+
+    .biome-tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-emerald);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .biome-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .biome-body {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .biome-footer {
+      position: relative;
+      z-index: 2;
+      border-top: 1px solid var(--border-glass);
+      padding-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .biome-stat {
+      color: #cbd5e1;
+    }
+
+    .biome-arrow {
+      color: var(--emerald-bright);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition);
+    }
+
+    .biome-card:hover .biome-arrow {
+      transform: translateX(4px);
+    }
+
+    /* ==========================================================================
+       7. INTERACTIVE SCENIC TRAIN SIMULATOR & ELEVATION SCRUBBER
+       ========================================================================== */
+    .train-stage {
+      background: linear-gradient(180deg, rgba(8, 28, 19, 0.8) 0%, rgba(4, 18, 12, 0.95) 100%);
+      border: 1px solid var(--border-emerald);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .train-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .route-scrubber {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .route-scrubber::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #10b981;
+      border: 3px solid #fff;
+      box-shadow: 0 0 15px #10b981;
+      cursor: grab;
+      transition: transform 0.1s;
+    }
+
+    .route-scrubber::-webkit-slider-thumb:active {
+      transform: scale(1.2);
+    }
+
+    .station-marker-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .station-marker-row span.active {
+      color: var(--emerald-bright);
+      text-shadow: 0 0 10px rgba(52, 211, 153, 0.6);
+    }
+
+    .train-realtime-card {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .train-stat-box h5 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .train-stat-box p {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      font-family: var(--font-mono);
+    }
+
+    .seat-recommendation {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 78, 59, 0.3));
+      border: 1px solid var(--emerald-glow);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .seat-recommendation .badge {
+      background: #10b981;
+      color: #032317;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ==========================================================================
+       8. DUAL-MONSOON 12-MONTH INTERACTIVE COMPASS
+       ========================================================================== */
+    .monsoon-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .monsoon-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .month-selector {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .month-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
+      color: var(--text-muted);
+      padding: 12px 8px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .month-pill:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .month-pill.active {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      border-color: #38bdf8;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    }
+
+    .monsoon-result-display {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .coast-status-row {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .coast-box {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .coast-box.sunny {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.08);
+    }
+
+    .coast-box.rainy {
+      border-color: rgba(56, 189, 248, 0.4);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    /* ==========================================================================
+       9. AUDIO-SYNTHESIZED PHRASE PLAYER (SINHALA SURVIVAL)
+       ========================================================================== */
+    .phrase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .phrase-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .phrase-card:hover {
+      border-color: var(--border-emerald);
+      transform: translateY(-3px);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .phrase-sinhala {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .phrase-phonetic {
+      font-size: 13px;
+      color: var(--emerald-bright);
+      font-family: var(--font-mono);
+      font-weight: 600;
+      display: block;
+    }
+
+    .phrase-english {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: block;
+    }
+
+    .phrase-play-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border-glass);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .phrase-card:hover .phrase-play-btn {
+      background: var(--emerald-glow);
+      color: #04271a;
+      transform: scale(1.1);
+    }
+
+    /* ==========================================================================
+       10. TUK-TUK FAIR FARE RADAR
+       ========================================================================== */
+    .tuktuk-radar-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border-emerald);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    @media (max-width: 850px) {
+      .tuktuk-radar-wrap {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .fare-display-big {
+      background: linear-gradient(135deg, rgba(6, 78, 59, 0.7), rgba(4, 30, 20, 0.9));
+      border: 1px solid var(--border-emerald);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      text-align: center;
+    }
+
+    .fare-amount {
+      font-size: clamp(36px, 5vw, 54px);
+      font-weight: 900;
+      color: var(--amber-gold);
+      font-family: var(--font-mono);
+      line-height: 1.1;
+      margin: 12px 0 6px;
+    }
+
+    .fare-usd {
+      font-size: 16px;
+      color: var(--emerald-bright);
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       11. FOOTER & CALL TO ACTION
+       ========================================================================== */
+    .cinematic-footer {
+      border-top: 1px solid var(--border-glass);
+      padding: 80px 24px 40px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      background: rgba(3, 10, 7, 0.9);
+    }
+
+    .footer-logo {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+      margin: 30px 0;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--emerald-bright);
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 30px;
+    }
+
+    /* ==========================================================================
+       12. RESPONSIVE BREAKPOINTS
+       ========================================================================== */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .hero-section {
+        padding-top: 110px;
+      }
+      .train-stage, .tuktuk-radar-wrap {
+        padding: 24px;
+      }
+      .month-selector {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body data-theme="emerald">
+
+  <!-- 1. Interactive Ambient Particle & Atmosphere Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- 2. Sticky Glassmorphic Navigation Bar -->
+  <header class="cinematic-nav">
+    <a href="#" class="logo-container">
+      <div class="logo-badge">CW</div>
+      <div>
+        <span class="logo-title">CeylonWander <span>🇱🇰</span></span>
+        <span class="logo-sub">Resplendent Isle</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#biomes">Biomes</a></li>
+      <li><a href="#train-simulator">Scenic Train</a></li>
+      <li><a href="#monsoon-compass">Monsoon Radar</a></li>
+      <li><a href="#phrase-player">Sinhala Phrases</a></li>
+      <li><a href="#tuktuk-tool">Fair Fare</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <!-- Web Audio Soundscape Toggle -->
+      <button id="soundscape-toggle" class="sound-btn" title="Toggle Synthesized Tropical Soundscape">
+        <span class="sound-pulse"></span>
+        <span id="sound-label">🎧 Island Audio</span>
+      </button>
+
+      <a href="/explore" class="cta-explore-btn">
+        <span>Launch Map</span>
+        <span>→</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- 3. Cinematic Hero Section -->
+  <main>
+    <section class="hero-section">
+      <!-- Status Badges -->
+      <div class="hero-badges-row">
+        <div class="live-chip">
+          <span style="display:inline-block;width:8px;height:8px;background:#34d399;border-radius:50%;box-shadow:0 0 10px #34d399;"></span>
+          <span>Cloudflare Colombo Edge • 110+ Spots</span>
+        </div>
+        <div class="time-chip" id="colombo-clock">
+          Colombo: 00:00:00 AM (GMT+5:30)
+        </div>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="hero-title">
+        Step into Sri Lanka’s <br>
+        <span class="highlight">Living, Breathing Topography.</span>
+      </h1>
+
+      <p class="hero-sub">
+        The first travel engine built on <strong>switchback mountain physics</strong>, 
+        transparent <strong>3-tier dual pricing</strong>, and <strong>islandwide microclimates</strong>. 
+        Zero scams. Zero guesswork.
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="hero-cta-group">
+        <a href="/explore" class="btn-primary">
+          <span>Launch Interactive Map (100% Free)</span>
+          <span>→</span>
+        </a>
+        <a href="#train-simulator" class="btn-secondary">
+          <span>Ride Scenic Train Simulator</span>
+          <span>🚂</span>
+        </a>
+      </div>
+
+      <!-- Dynamic Environment Switcher -->
+      <div class="environment-picker">
+        <button class="env-btn active" data-env="emerald">
+          <span>🌿</span> Emerald Highland
+        </button>
+        <button class="env-btn" data-env="golden">
+          <span>🌅</span> Golden Sunset
+        </button>
+        <button class="env-btn" data-env="monsoon">
+          <span>🌧️</span> Tropical Monsoon
+        </button>
+        <button class="env-btn" data-env="night">
+          <span>✨</span> Firefly Night
+        </button>
+      </div>
+    </section>
+
+    <!-- 4. Interactive Biomes & Micro-Regions -->
+    <section id="biomes" class="section-wrap">
+      <div class="section-header">
+        <span class="section-badge">Five Worlds In One Island</span>
+        <h2 class="section-title">Journey Through The Biomes</h2>
+        <p class="section-desc">
+          From cold, misty tea cloud-forests at 2,000 meters to sun-drenched turquoise surf coves and 2,500-year-old rock citadels.
+        </p>
+      </div>
+
+      <div class="biome-grid">
+        <!-- Biome 1 -->
+        <div class="biome-card" onclick="window.location.href='/explore'">
+          <div class="biome-top">
+            <div class="biome-icon-wrap">⛰️</div>
+            <span class="biome-tag">Elevation 1,000m - 2,500m</span>
+            <h3 class="biome-name">Central Tea Highlands</h3>
+            <p class="biome-body">
+              Cascading tea plantations, cold eucalyptus air, roaring ravines, and the iconic Nine Arch Bridge. Temperature drops to 12°C at night.
+            </p>
+          </div>
+          <div class="biome-footer">
+            <span class="biome-stat">Ella • Nuwara Eliya • Horton Plains</span>
+            <span class="biome-arrow">Inspect on Map →</span>
+          </div>
+        </div>
+
+        <!-- Biome 2 -->
+        <div class="biome-card" onclick="window.location.href='/explore'">
+          <div class="biome-top">
+            <div class="biome-icon-wrap">🏛️</div>
+            <span class="biome-tag">UNESCO Ancient Heritage</span>
+            <h3 class="biome-name">Cultural Triangle</h3>
+            <p class="biome-body">
+              Sigiriya Lion Rock sky fortress, Dambulla cave murals, and towering brick stupas built over 2,000 years ago across dry northern plains.
+            </p>
+          </div>
+          <div class="biome-footer">
+            <span class="biome-stat">Sigiriya • Anuradhapura • Polonnaruwa</span>
+            <span class="biome-arrow">Inspect on Map →</span>
+          </div>
+        </div>
+
+        <!-- Biome 3 -->
+        <div class="biome-card" onclick="window.location.href='/explore'">
+          <div class="biome-top">
+            <div class="biome-icon-wrap">🏄</div>
+            <span class="biome-tag">Coastal Surf & Forts</span>
+            <h3 class="biome-name">South Surf Coast</h3>
+            <p class="biome-body">
+              17th-century Dutch ramparts of Galle Fort, gentle sandy peelers in Weligama Bay, coconut hills, and stilt-fisherman shorelines.
+            </p>
+          </div>
+          <div class="biome-footer">
+            <span class="biome-stat">Galle • Weligama • Hiriketiya • Mirissa</span>
+            <span class="biome-arrow">Inspect on Map →</span>
+          </div>
+        </div>
+
+        <!-- Biome 4 -->
+        <div class="biome-card" onclick="window.location.href='/explore'">
+          <div class="biome-top">
+            <div class="biome-icon-wrap">🐘</div>
+            <span class="biome-tag">Wildlife & Thorn Scrub</span>
+            <h3 class="biome-name">Deep South Safaris</h3>
+            <p class="biome-body">
+              World’s highest leopard density in Yala block 1, guaranteed wild elephant herds along Udawalawe reservoir, and ethical open jeeps.
+            </p>
+          </div>
+          <div class="biome-footer">
+            <span class="biome-stat">Yala • Udawalawe • Bundala Wetlands</span>
+            <span class="biome-arrow">Inspect on Map →</span>
+          </div>
+        </div>
+
+        <!-- Biome 5 -->
+        <div class="biome-card" onclick="window.location.href='/explore'">
+          <div class="biome-top">
+            <div class="biome-icon-wrap">🏝️</div>
+            <span class="biome-tag">Untouched Northern Archipelago</span>
+            <h3 class="biome-name">Jaffna & The North</h3>
+            <p class="biome-body">
+              Vibrant Hindu Kovils, wild ponies roaming Delft Island, palmyra palm forests, and shallow sapphire waters untouched by mass tourism.
+            </p>
+          </div>
+          <div class="biome-footer">
+            <span class="biome-stat">Jaffna • Delft Island • Point Pedro</span>
+            <span class="biome-arrow">Inspect on Map →</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Interactive Kandy-To-Ella Train Simulator -->
+    <section id="train-simulator" class="section-wrap">
+      <div class="section-header">
+        <span class="section-badge">Iconic Mountain Railway</span>
+        <h2 class="section-title">Scenic Train Route Simulator</h2>
+        <p class="section-desc">
+          Drag the scrubber to travel along the famous Main Line railway from Kandy to Ella. 
+          Discover station elevations and know exactly which side of the carriage to sit on!
+        </p>
+      </div>
+
+      <div class="train-stage">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <span style="font-size:12px; color:var(--text-emerald); font-weight:800; text-transform:uppercase;">Interactive Scrubber</span>
+            <h4 id="current-station-name" style="font-size:26px; font-weight:900; color:#fff;">Nanu Oya (Nuwara Eliya)</h4>
+          </div>
+          <span style="font-size:36px;">🚂💨</span>
+        </div>
+
+        <div class="train-controls">
+          <input type="range" min="0" max="4" value="2" step="1" id="train-scrubber" class="route-scrubber">
+          <div class="station-marker-row">
+            <span data-idx="0">Peradeniya</span>
+            <span data-idx="1">Hatton</span>
+            <span data-idx="2" class="active">Nanu Oya</span>
+            <span data-idx="3">Pattipola</span>
+            <span data-idx="4">Ella</span>
+          </div>
+        </div>
+
+        <!-- Real-time dynamic station readouts -->
+        <div class="train-realtime-card">
+          <div class="train-stat-box">
+            <h5>Elevation Above Sea</h5>
+            <p id="station-elevation">1,613 meters</p>
+          </div>
+          <div class="train-stat-box">
+            <h5>Travel Time From Kandy</h5>
+            <p id="station-duration">~4 hours 15 mins</p>
+          </div>
+          <div class="train-stat-box">
+            <h5>Landscape View</h5>
+            <p id="station-view" style="font-size:16px;">Tea Estate Valleys & Waterfalls</p>
+          </div>
+        </div>
+
+        <div class="seat-recommendation">
+          <span class="badge" id="seat-side-badge">SIT ON RIGHT SIDE</span>
+          <span id="seat-side-desc" style="font-size:13px; color:#e2e8f0;">
+            Sit on the <strong>Right Side</strong> leaving Kandy towards Nanu Oya for sweeping vistas of St. Clair’s waterfall and rolling green tea bushes!
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Dual-Monsoon Weather Compass -->
+    <section id="monsoon-compass" class="section-wrap">
+      <div class="section-header">
+        <span class="section-badge">Opposite Seasonal Cycles</span>
+        <h2 class="section-title">Dual-Monsoon Weather Radar</h2>
+        <p class="section-desc">
+          Sri Lanka is always sunny somewhere! Click any month of the year to see which coastline is basked in sunshine and which is receiving tropical rain.
+        </p>
+      </div>
+
+      <div class="monsoon-grid">
+        <div>
+          <span style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--text-emerald); margin-bottom:12px; display:block;">Select Your Travel Month:</span>
+          <div class="month-selector" id="month-buttons">
+            <button class="month-pill" data-m="0">Jan</button>
+            <button class="month-pill" data-m="1">Feb</button>
+            <button class="month-pill" data-m="2">Mar</button>
+            <button class="month-pill" data-m="3">Apr</button>
+            <button class="month-pill" data-m="4">May</button>
+            <button class="month-pill" data-m="5">Jun</button>
+            <button class="month-pill" data-m="6">Jul</button>
+            <button class="month-pill" data-m="7">Aug</button>
+            <button class="month-pill" data-m="8">Sep</button>
+            <button class="month-pill active" data-m="9">Oct</button>
+            <button class="month-pill" data-m="10">Nov</button>
+            <button class="month-pill" data-m="11">Dec</button>
+          </div>
+
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.6;">
+            <strong>Pro Tip:</strong> Sri Lanka features two distinct monsoons: the <em>Yala</em> (Southwest) and <em>Maha</em> (Northeast). If it's rainy on one coast, the other coast is typically calm and crystal blue!
+          </p>
+        </div>
+
+        <div class="monsoon-result-display">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h4 id="monsoon-title" style="font-size:22px; font-weight:800; color:#fff;">October: Inter-Monsoon Shift</h4>
+            <span id="monsoon-icon" style="font-size:32px;">🌦️</span>
+          </div>
+
+          <p id="monsoon-summary" style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:20px;">
+            Thunderstorms frequently roll through central hills during late afternoon. Best beach conditions are transitioning towards the southern bays.
+          </p>
+
+          <div class="coast-status-row">
+            <div class="coast-box sunny" id="south-coast-box">
+              <div>
+                <strong style="color:#fff; font-size:14px; display:block;">South & West Coast</strong>
+                <span style="font-size:12px; color:var(--text-muted);">Galle, Weligama, Bentota, Colombo</span>
+              </div>
+              <span id="south-coast-badge" style="font-size:12px; font-weight:800; color:#fbbf24;">☀️ Sunny & Dry</span>
+            </div>
+
+            <div class="coast-box rainy" id="east-coast-box">
+              <div>
+                <strong style="color:#fff; font-size:14px; display:block;">East & North Coast</strong>
+                <span style="font-size:12px; color:var(--text-muted);">Arugam Bay, Trincomalee, Nilaveli</span>
+              </div>
+              <span id="east-coast-badge" style="font-size:12px; font-weight:800; color:#38bdf8;">🌧️ Rain & Swells</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Audio Sinhala Survival Phrases -->
+    <section id="phrase-player" class="section-wrap">
+      <div class="section-header">
+        <span class="section-badge">Local Etiquette & Street Smarts</span>
+        <h2 class="section-title">Sinhala Survival Phrases</h2>
+        <p class="section-desc">
+          Click any card to play synthesized audio pronunciation. Respectful, friendly Sinhala phrases earn immediate smiles and respect across the island.
+        </p>
+      </div>
+
+      <div class="phrase-grid">
+        <div class="phrase-card" onclick="playSinhalaPhrase('Epā, sthuthiyi', 'No, thank you')">
+          <div>
+            <span class="phrase-sinhala">එපා, ස්තූතියි</span>
+            <span class="phrase-phonetic">Epā, sthuthiyi</span>
+            <span class="phrase-english">"No, thank you" (Polite tout dismisser)</span>
+          </div>
+          <div class="phrase-play-btn">🔊</div>
+        </div>
+
+        <div class="phrase-card" onclick="playSinhalaPhrase('Meter eka daanawadha?', 'Will you turn on the meter?')">
+          <div>
+            <span class="phrase-sinhala">මීටරය දානවද?</span>
+            <span class="phrase-phonetic">Meter eka daanawadha?</span>
+            <span class="phrase-english">"Will you turn on the meter?" (Tuk-tuks)</span>
+          </div>
+          <div class="phrase-play-btn">🔊</div>
+        </div>
+
+        <div class="phrase-card" onclick="playSinhalaPhrase('Kiyadha?', 'How much is this?')">
+          <div>
+            <span class="phrase-sinhala">කීයද?</span>
+            <span class="phrase-phonetic">Kiyadha?</span>
+            <span class="phrase-english">"How much is this?" (Markets & fruit stalls)</span>
+          </div>
+          <div class="phrase-play-btn">🔊</div>
+        </div>
+
+        <div class="phrase-card" onclick="playSinhalaPhrase('Sini aduwen', 'Less sugar please')">
+          <div>
+            <span class="phrase-sinhala">සීනි අඩුවෙන්</span>
+            <span class="phrase-phonetic">Sini aduwen</span>
+            <span class="phrase-english">"Less sugar, please" (Tea & juices)</span>
+          </div>
+          <div class="phrase-play-btn">🔊</div>
+        </div>
+
+        <div class="phrase-card" onclick="playSinhalaPhrase('Sera aduwen', 'Less spicy')">
+          <div>
+            <span class="phrase-sinhala">සැර අඩුවෙන්</span>
+            <span class="phrase-phonetic">Sera aduwen</span>
+            <span class="phrase-english">"Less spicy / mild chili" (Village rice & curry)</span>
+          </div>
+          <div class="phrase-play-btn">🔊</div>
+        </div>
+
+        <div class="phrase-card" onclick="playSinhalaPhrase('Bohoma sthuthiyi', 'Thank you very much')">
+          <div>
+            <span class="phrase-sinhala">බොහොම ස්තූතියි</span>
+            <span class="phrase-phonetic">Bohoma sthuthiyi</span>
+            <span class="phrase-english">"Thank you very much" (Universal warmth)</span>
+          </div>
+          <div class="phrase-play-btn">🔊</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Interactive Tuk-Tuk Fair Fare Calculator -->
+    <section id="tuktuk-tool" class="section-wrap">
+      <div class="tuktuk-radar-wrap">
+        <div>
+          <span style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--amber-gold); margin-bottom:12px; display:block;">🛺 Anti-Gouging Benchmark</span>
+          <h2 style="font-family:var(--font-serif); font-size:36px; font-weight:900; line-height:1.2; margin-bottom:16px;">
+            Tuk-Tuk Fair Fare Meter
+          </h2>
+          <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:24px;">
+            Outside Colombo, meters are rare. Use our live fuel-regulated benchmark accounting for mountain hills to negotiate with total confidence.
+          </p>
+
+          <div style="margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700; margin-bottom:8px;">
+              <span>Trip Distance:</span>
+              <span id="fare-km-label" style="color:var(--emerald-bright);">8 km</span>
+            </div>
+            <input type="range" min="1" max="35" value="8" id="fare-km-slider" class="route-scrubber">
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button id="btn-terrain-flat" class="env-btn active" style="flex:1; justify-content:center; border:1px solid var(--border-glass);">
+              🏖️ Flat Coast (Galle)
+            </button>
+            <button id="btn-terrain-hill" class="env-btn" style="flex:1; justify-content:center; border:1px solid var(--border-glass);">
+              ⛰️ Hill Country (+30%)
+            </button>
+          </div>
+        </div>
+
+        <div class="fare-display-big">
+          <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:var(--text-emerald); font-weight:800;">Honest Regulated Range</span>
+          <div class="fare-amount" id="fare-lkr-display">LKR 750 – 900</div>
+          <div class="fare-usd" id="fare-usd-display">~$2.45 – $2.95 USD</div>
+          <p style="font-size:11px; color:#64748b; margin-top:12px;">Based on official fuel price indices • No 3x tourist gouging</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 9. Cinematic Global Footer -->
+  <footer class="cinematic-footer">
+    <div class="footer-logo">CeylonWander 🇱🇰</div>
+    <p style="color:var(--text-muted); font-size:14px; max-width:500px; margin:0 auto;">
+      A zero-cost edge travel platform for overseas explorers. Hosted on Cloudflare Pages Colombo edge point-of-presence.
+    </p>
+
+    <ul class="footer-links">
+      <li><a href="/explore">Full Explorer Map</a></li>
+      <li><a href="#biomes">Biomes</a></li>
+      <li><a href="#train-simulator">Train Copilot</a></li>
+      <li><a href="#monsoon-compass">Monsoon Radar</a></li>
+      <li><a href="#phrase-player">Sinhala Audio</a></li>
+      <li><a href="#tuktuk-tool">Tuk-Tuk Meter</a></li>
+    </ul>
+
+    <div class="footer-copy">
+      © 2026 CeylonWander. Free & open discovery for every traveler.
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       13. VANILLA JAVASCRIPT: AUDIO SYNTHESIS, PARTICLE SYSTEM & INTERACTIVITY
+       ========================================================================== -->
+  <script>
+    /* --------------------------------------------------------------------------
+       A. Real-Time Colombo Clock (GMT+5:30)
+       -------------------------------------------------------------------------- */
+    function updateColomboClock() {
+      const now = new Date();
+      // UTC + 5.5 hours
+      const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const colomboTime = new Date(utcTime + (3600000 * 5.5));
+      const hours = String(colomboTime.getHours()).padStart(2, '0');
+      const minutes = String(colomboTime.getMinutes()).padStart(2, '0');
+      const seconds = String(colomboTime.getSeconds()).padStart(2, '0');
+      const clockEl = document.getElementById('colombo-clock');
+      if (clockEl) {
+        clockEl.textContent = `Colombo (GMT+5:30): ${hours}:${minutes}:${seconds}`;
+      }
+    }
+    setInterval(updateColomboClock, 1000);
+    updateColomboClock();
+
+    /* --------------------------------------------------------------------------
+       B. Web Audio API Ambient Soundscape Engine (No external sound files!)
+       Synthesizes tropical pink noise rain, ocean waves, and jungle crickets.
+       -------------------------------------------------------------------------- */
+    let audioCtx = null;
+    let isPlayingSoundscape = false;
+    let rainGain = null;
+    let cricketGain = null;
+    let soundInterval = null;
+
+    function initWebAudioSoundscape() {
+      if (audioCtx) return;
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContext();
+
+      // Master output gain
+      const masterGain = audioCtx.createGain();
+      masterGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+      masterGain.connect(audioCtx.destination);
+
+      // Pink Noise Generator for Tropical Rain / Surf
+      const bufferSize = audioCtx.sampleRate * 2;
+      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+        output[i] *= 0.11;
+        b6 = white * 0.115926;
+      }
+
+      const whiteNoise = audioCtx.createBufferSource();
+      whiteNoise.buffer = noiseBuffer;
+      whiteNoise.loop = true;
+
+      // Bandpass filter to make it sound like gentle tropical rain
+      const rainFilter = audioCtx.createBiquadFilter();
+      rainFilter.type = 'lowpass';
+      rainFilter.frequency.setValueAtTime(950, audioCtx.currentTime);
+
+      rainGain = audioCtx.createGain();
+      rainGain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+
+      whiteNoise.connect(rainFilter);
+      rainFilter.connect(rainGain);
+      rainGain.connect(masterGain);
+      whiteNoise.start();
+
+      // High-Frequency Jungle Crickets Synth
+      cricketGain = audioCtx.createGain();
+      cricketGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+      cricketGain.connect(masterGain);
+
+      // Pulse crickets
+      soundInterval = setInterval(() => {
+        if (!isPlayingSoundscape || !audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const oscGain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(4500 + Math.random() * 800, audioCtx.currentTime);
+        oscGain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+        osc.connect(oscGain);
+        oscGain.connect(cricketGain);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      }, 350);
+    }
+
+    const soundToggleBtn = document.getElementById('soundscape-toggle');
+    const soundLabel = document.getElementById('sound-label');
+
+    if (soundToggleBtn) {
+      soundToggleBtn.addEventListener('click', () => {
+        if (!audioCtx) initWebAudioSoundscape();
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        isPlayingSoundscape = !isPlayingSoundscape;
+        if (isPlayingSoundscape) {
+          rainGain.gain.setTargetAtTime(0.2, audioCtx.currentTime, 0.5);
+          cricketGain.gain.setTargetAtTime(0.05, audioCtx.currentTime, 0.5);
+          soundToggleBtn.classList.add('active');
+          soundLabel.textContent = '🔊 Ambiance Playing';
+        } else {
+          rainGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.3);
+          cricketGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.3);
+          soundToggleBtn.classList.remove('active');
+          soundLabel.textContent = '🎧 Island Audio';
+        }
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       C. Sinhala Audio Phrase Speaker (Web Speech API + Synthesized Chime)
+       -------------------------------------------------------------------------- */
+    function playSinhalaPhrase(phonetic, english) {
+      // Play a soft bell chime
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime); // E5
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.6);
+
+      // Speech synthesis
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(phonetic);
+        utter.rate = 0.9;
+        utter.pitch = 1.0;
+        utter.lang = 'en-US';
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       D. Interactive Scenic Train Scrubber
+       -------------------------------------------------------------------------- */
+    const STATIONS = [
+      {
+        name: "Peradeniya Junction",
+        elevation: "492 meters",
+        duration: "0 hrs (Departure)",
+        view: "Lush Mahaweli River Basin & Royal Palms",
+        seatSide: "SIT ON RIGHT SIDE",
+        seatDesc: "Right side gives glorious looks of the winding Mahaweli riverbanks and terraced paddy fields."
+      },
+      {
+        name: "Hatton (Adam's Peak Gateway)",
+        elevation: "1,263 meters",
+        duration: "~2 hrs 30 mins",
+        view: "Tea Valley Canyons & Devon Falls",
+        seatSide: "SIT ON RIGHT SIDE",
+        seatDesc: "Sit on the Right Side to catch distant views of the sacred Adam's Peak (Sri Pada) conical pyramid!"
+      },
+      {
+        name: "Nanu Oya (Nuwara Eliya)",
+        elevation: "1,613 meters",
+        duration: "~4 hrs 15 mins",
+        view: "Tea Estate Valleys & Waterfalls",
+        seatSide: "SIT ON RIGHT SIDE",
+        seatDesc: "Sit on the Right Side leaving Kandy towards Nanu Oya for sweeping vistas of St. Clair’s waterfall!"
+      },
+      {
+        name: "Pattipola Summit (Highest Point)",
+        elevation: "1,898 meters",
+        duration: "~5 hrs 20 mins",
+        view: "Summit Pine & Misty Cloud Forest",
+        seatSide: "SWITCH TO LEFT SIDE",
+        seatDesc: "Prepare to switch! As you cross through the summit tunnel, the entire southern lowland drop opens on your Left!"
+      },
+      {
+        name: "Ella (Demodara Gap)",
+        elevation: "1,041 meters",
+        duration: "~6 hrs 30 mins",
+        view: "Ella Gap Ravine & Nine Arch Bridge",
+        seatSide: "SIT ON LEFT SIDE",
+        seatDesc: "Left Side is mandatory! Panoramic drop of Ella Rock and the curved brick Nine Arch Bridge!"
+      }
+    ];
+
+    const trainSlider = document.getElementById('train-scrubber');
+    const stationNameEl = document.getElementById('current-station-name');
+    const stationElevEl = document.getElementById('station-elevation');
+    const stationDurEl = document.getElementById('station-duration');
+    const stationViewEl = document.getElementById('station-view');
+    const seatBadgeEl = document.getElementById('seat-side-badge');
+    const seatDescEl = document.getElementById('seat-side-desc');
+    const stationMarkers = document.querySelectorAll('.station-marker-row span');
+
+    if (trainSlider) {
+      trainSlider.addEventListener('input', (e) => {
+        const idx = parseInt(e.target.value, 10);
+        const data = STATIONS[idx];
+        if (!data) return;
+
+        stationNameEl.textContent = data.name;
+        stationElevEl.textContent = data.elevation;
+        stationDurEl.textContent = data.duration;
+        stationViewEl.textContent = data.view;
+        seatBadgeEl.textContent = data.seatSide;
+        seatDescEl.innerHTML = data.seatDesc;
+
+        stationMarkers.forEach((m, i) => {
+          if (i === idx) m.classList.add('active');
+          else m.classList.remove('active');
+        });
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       E. Dual-Monsoon 12-Month Selector Logic
+       -------------------------------------------------------------------------- */
+    const MONTH_DATA = [
+      {
+        title: "January: Peak Dry Highland Season",
+        icon: "☀️",
+        summary: "Clear sunny skies across South Coast and Highlands. Great for Adam's Peak pilgrimage and Galle Fort beaches.",
+        south: { status: "☀️ Sunny & Calm", sunny: true },
+        east: { status: "🌧️ Maha Monsoon Rain", sunny: false }
+      },
+      {
+        title: "February: Islandwide Golden Sunshine",
+        icon: "🌟",
+        summary: "One of the best months to visit. Glassy surf in Mirissa, dry hikes in Horton Plains, sunny cultural triangle.",
+        south: { status: "☀️ Perfect Sunshine", sunny: true },
+        east: { status: "🌤️ Clearing Skies", sunny: true }
+      },
+      {
+        title: "March: Warm & Calm Seas",
+        icon: "🌊",
+        summary: "Ideal for blue whale watching in Mirissa and calm swimming on the southern beaches.",
+        south: { status: "☀️ Sunny & Warm", sunny: true },
+        east: { status: "☀️ Dry & Pleasant", sunny: true }
+      },
+      {
+        title: "April: Sinhala & Tamil New Year",
+        icon: "🏮",
+        summary: "Warmest month of the year. Inter-monsoon convection storms in late afternoons; festive cultural vibes.",
+        south: { status: "☀️ Warm / Afternoon Storms", sunny: true },
+        east: { status: "☀️ Sunny & Dry", sunny: true }
+      },
+      {
+        title: "May: Yala Monsoon Begins",
+        icon: "🌧️",
+        summary: "Southwest coast sees strong swells and monsoon downpours. East Coast surf season kicks into full gear!",
+        south: { status: "🌧️ Heavy Swells & Rain", sunny: false },
+        east: { status: "☀️ Prime Surf & Sun", sunny: true }
+      },
+      {
+        title: "June: East Coast Prime Season",
+        icon: "🏄",
+        summary: "Head to Arugam Bay for world-class right hand point break surf and Nilaveli for crystal clear waters.",
+        south: { status: "🌧️ Monsoon Rain", sunny: false },
+        east: { status: "☀️ Pristine & Dry", sunny: true }
+      },
+      {
+        title: "July: Summer Holiday Window",
+        icon: "🏖️",
+        summary: "East coast beaches are at their absolute peak. Cultural Triangle (Sigiriya) is dry and warm.",
+        south: { status: "⛅ Choppy Swell", sunny: false },
+        east: { status: "☀️ Glassy & Warm", sunny: true }
+      },
+      {
+        title: "August: Esala Perahera in Kandy",
+        icon: "🐘",
+        summary: "Grand tooth relic elephant pageant in Kandy. Elephant Gathering at Minneriya National Park.",
+        south: { status: "⛅ Mild Sea Breeze", sunny: false },
+        east: { status: "☀️ Golden Sun & Waves", sunny: true }
+      },
+      {
+        title: "September: Transition Month",
+        icon: "🌦️",
+        summary: "Yala monsoon winds taper off. Whale migrations begin towards southern deep waters.",
+        south: { status: "⛅ Calming Waters", sunny: true },
+        east: { status: "☀️ Late Season Surf", sunny: true }
+      },
+      {
+        title: "October: Inter-Monsoon Shift",
+        icon: "🌦️",
+        summary: "Thunderstorms frequently roll through central hills during late afternoon. Best conditions moving south.",
+        south: { status: "☀️ Sunny & Dry", sunny: true },
+        east: { status: "🌧️ Rain & Swells", sunny: false }
+      },
+      {
+        title: "November: Maha Monsoon on East",
+        icon: "🌧️",
+        summary: "Northeast monsoon drenches Jaffna and Trincomalee. Southwest beaches (Hiriketiya, Unawatuna) open for season.",
+        south: { status: "☀️ Sunny Surf Season", sunny: true },
+        east: { status: "🌧️ Maha Rain Season", sunny: false }
+      },
+      {
+        title: "December: Peak Holiday Wave",
+        icon: "✨",
+        summary: "High tourist influx. Blue skies and tropical warmth across Colombo, Galle, Weligama, and Ella hills.",
+        south: { status: "☀️ Peak Blue Skies", sunny: true },
+        east: { status: "🌧️ Rainy & Rough", sunny: false }
+      }
+    ];
+
+    const monthBtns = document.querySelectorAll('.month-pill');
+    const monsoonTitleEl = document.getElementById('monsoon-title');
+    const monsoonIconEl = document.getElementById('monsoon-icon');
+    const monsoonSummaryEl = document.getElementById('monsoon-summary');
+    const southCoastBox = document.getElementById('south-coast-box');
+    const southCoastBadge = document.getElementById('south-coast-badge');
+    const eastCoastBox = document.getElementById('east-coast-box');
+    const eastCoastBadge = document.getElementById('east-coast-badge');
+
+    monthBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        monthBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const m = parseInt(btn.getAttribute('data-m'), 10);
+        const data = MONTH_DATA[m];
+        if (!data) return;
+
+        monsoonTitleEl.textContent = data.title;
+        monsoonIconEl.textContent = data.icon;
+        monsoonSummaryEl.textContent = data.summary;
+
+        southCoastBadge.textContent = data.south.status;
+        southCoastBox.className = `coast-box ${data.south.sunny ? 'sunny' : 'rainy'}`;
+
+        eastCoastBadge.textContent = data.east.status;
+        eastCoastBox.className = `coast-box ${data.east.sunny ? 'sunny' : 'rainy'}`;
+      });
+    });
+
+    /* --------------------------------------------------------------------------
+       F. Tuk-Tuk Fair Fare Calculator
+       -------------------------------------------------------------------------- */
+    let currentKm = 8;
+    let isHillTerrain = false;
+
+    const kmSlider = document.getElementById('fare-km-slider');
+    const kmLabel = document.getElementById('fare-km-label');
+    const lkrDisplay = document.getElementById('fare-lkr-display');
+    const usdDisplay = document.getElementById('fare-usd-display');
+    const btnFlat = document.getElementById('btn-terrain-flat');
+    const btnHill = document.getElementById('btn-terrain-hill');
+
+    function updateFare() {
+      const base = 120;
+      const perKm = 95;
+      let total = base + (currentKm > 1 ? (currentKm - 1) * perKm : 0);
+      if (isHillTerrain) total *= 1.3;
+
+      const minLkr = Math.round(total * 0.95 / 50) * 50;
+      const maxLkr = Math.round(total * 1.15 / 50) * 50;
+      const usdMin = (minLkr / 305).toFixed(2);
+      const usdMax = (maxLkr / 305).toFixed(2);
+
+      kmLabel.textContent = `${currentKm} km`;
+      lkrDisplay.textContent = `LKR ${minLkr.toLocaleString()} – ${maxLkr.toLocaleString()}`;
+      usdDisplay.textContent = `~$${usdMin} – $${usdMax} USD`;
+    }
+
+    if (kmSlider) {
+      kmSlider.addEventListener('input', (e) => {
+        currentKm = parseInt(e.target.value, 10);
+        updateFare();
+      });
+    }
+
+    if (btnFlat && btnHill) {
+      btnFlat.addEventListener('click', () => {
+        isHillTerrain = false;
+        btnFlat.classList.add('active');
+        btnHill.classList.remove('active');
+        updateFare();
+      });
+
+      btnHill.addEventListener('click', () => {
+        isHillTerrain = true;
+        btnHill.classList.add('active');
+        btnFlat.classList.remove('active');
+        updateFare();
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       G. Dynamic Atmosphere Canvas (Fireflies, Rain, Fog)
+       -------------------------------------------------------------------------- */
+    const canvas = document.getElementById('ambient-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    let currentEnv = 'emerald';
+    const particles = [];
+    const PARTICLE_COUNT = 55;
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 2.5 + 1,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        alpha: Math.random() * 0.7 + 0.3,
+        pulseSpeed: Math.random() * 0.03 + 0.01
+      });
+    }
+
+    function renderCanvas() {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+
+        p.alpha += p.pulseSpeed;
+        if (p.alpha > 0.9 || p.alpha < 0.2) p.pulseSpeed = -p.pulseSpeed;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+
+        if (currentEnv === 'emerald') {
+          ctx.fillStyle = `rgba(52, 211, 153, ${Math.abs(p.alpha)})`;
+          ctx.shadowColor = '#10b981';
+          ctx.shadowBlur = 10;
+        } else if (currentEnv === 'golden') {
+          ctx.fillStyle = `rgba(251, 191, 36, ${Math.abs(p.alpha)})`;
+          ctx.shadowColor = '#f59e0b';
+          ctx.shadowBlur = 12;
+        } else if (currentEnv === 'monsoon') {
+          ctx.fillStyle = `rgba(56, 189, 248, ${Math.abs(p.alpha)})`;
+          ctx.shadowColor = '#0284c7';
+          ctx.shadowBlur = 8;
+        } else {
+          ctx.fillStyle = `rgba(192, 132, 252, ${Math.abs(p.alpha)})`;
+          ctx.shadowColor = '#a855f7';
+          ctx.shadowBlur = 15;
+        }
+
+        ctx.fill();
+      });
+
+      requestAnimationFrame(renderCanvas);
+    }
+    renderCanvas();
+
+    // Environment Switcher Buttons
+    const envButtons = document.querySelectorAll('.env-btn[data-env]');
+    envButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        envButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const env = btn.getAttribute('data-env');
+        currentEnv = env;
+        document.body.setAttribute('data-theme', env);
+      });
+    });
+  </script>
+</body>
+</html>
