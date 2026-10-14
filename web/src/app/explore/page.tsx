@@ -13,8 +13,12 @@ import AddPlaceModal from '@/components/place/AddPlaceModal';
 import SmartLoopsModal from '@/components/loops/SmartLoopsModal';
 import OfflinePacksModal from '@/components/offline/OfflinePacksModal';
 import CommunityReportModal from '@/components/community/CommunityReportModal';
-import TripSequencerPanel from '@/components/itinerary/TripSequencerPanel';
 import TukTukFareModal from '@/components/calculator/TukTukFareModal';
+import ScenicTrainModal from '@/components/train/ScenicTrainModal';
+import MonsoonRadarModal from '@/components/weather/MonsoonRadarModal';
+import PoyaCalendarModal from '@/components/culture/PoyaCalendarModal';
+import ScamRadarModal from '@/components/safety/ScamRadarModal';
+import TripSequencerPanel from '@/components/itinerary/TripSequencerPanel';
 import { Compass, Plus } from 'lucide-react';
 
 // Dynamic import for MapLibre GL to disable SSR
@@ -44,6 +48,10 @@ export default function HomePage() {
   const [showLoopsModal, setShowLoopsModal] = useState(false);
   const [showOfflineModal, setShowOfflineModal] = useState(false);
   const [showTukTukModal, setShowTukTukModal] = useState(false);
+  const [showTrainModal, setShowTrainModal] = useState(false);
+  const [showMonsoonModal, setShowMonsoonModal] = useState(false);
+  const [showPoyaModal, setShowPoyaModal] = useState(false);
+  const [showScamModal, setShowScamModal] = useState(false);
   const [syncNotice, setSyncNotice] = useState<string | null>(null);
 
   // Sequencer State
@@ -169,6 +177,10 @@ export default function HomePage() {
         onOpenAddPlace={() => setShowAddPlaceModal(true)}
         onOpenSequencer={handleOpenSequencerFromBar}
         onOpenTukTukFare={() => setShowTukTukModal(true)}
+        onOpenScenicTrain={() => setShowTrainModal(true)}
+        onOpenMonsoonRadar={() => setShowMonsoonModal(true)}
+        onOpenPoyaCalendar={() => setShowPoyaModal(true)}
+        onOpenScamRadar={() => setShowScamModal(true)}
         placesCount={displayedPlaces.length}
       />
 
@@ -322,6 +334,26 @@ export default function HomePage() {
       <TukTukFareModal
         isOpen={showTukTukModal}
         onClose={() => setShowTukTukModal(false)}
+      />
+
+      <ScenicTrainModal
+        isOpen={showTrainModal}
+        onClose={() => setShowTrainModal(false)}
+      />
+
+      <MonsoonRadarModal
+        isOpen={showMonsoonModal}
+        onClose={() => setShowMonsoonModal(false)}
+      />
+
+      <PoyaCalendarModal
+        isOpen={showPoyaModal}
+        onClose={() => setShowPoyaModal(false)}
+      />
+
+      <ScamRadarModal
+        isOpen={showScamModal}
+        onClose={() => setShowScamModal(false)}
       />
 
       {reportPlace && (

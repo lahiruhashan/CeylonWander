@@ -2,11 +2,19 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Compass, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Compass, CheckCircle2, ArrowRight, Train, CloudSun, Calendar, ShieldAlert } from 'lucide-react';
 import TukTukFareModal from '@/components/calculator/TukTukFareModal';
+import ScenicTrainModal from '@/components/train/ScenicTrainModal';
+import MonsoonRadarModal from '@/components/weather/MonsoonRadarModal';
+import PoyaCalendarModal from '@/components/culture/PoyaCalendarModal';
+import ScamRadarModal from '@/components/safety/ScamRadarModal';
 
 export default function LandingPage() {
   const [showTukTukModal, setShowTukTukModal] = useState(false);
+  const [showTrainModal, setShowTrainModal] = useState(false);
+  const [showMonsoonModal, setShowMonsoonModal] = useState(false);
+  const [showPoyaModal, setShowPoyaModal] = useState(false);
+  const [showScamModal, setShowScamModal] = useState(false);
 
   // Quick interactive fare preview state on landing page
   const [previewKm, setPreviewKm] = useState(6);
@@ -45,10 +53,14 @@ export default function LandingPage() {
             </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-7 text-xs font-bold text-gray-600">
+          <nav className="hidden md:flex items-center gap-6 text-xs font-bold text-gray-600">
+            <a href="#traveler-toolkit" className="hover:text-emerald-800 transition-colors flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Traveler Toolkit</span>
+            </a>
             <a href="#why-us" className="hover:text-emerald-800 transition-colors">Why CeylonWander</a>
-            <a href="#tuktuk-tool" className="hover:text-emerald-800 transition-colors">Tuk-Tuk Fare Tool</a>
-            <a href="#corridors" className="hover:text-emerald-800 transition-colors">Top Corridors</a>
+            <a href="#tuktuk-tool" className="hover:text-emerald-800 transition-colors">Tuk-Tuk Tool</a>
+            <a href="#corridors" className="hover:text-emerald-800 transition-colors">Corridors</a>
             <a href="#etiquette" className="hover:text-emerald-800 transition-colors">Temple Rules</a>
           </nav>
 
@@ -101,7 +113,7 @@ export default function LandingPage() {
           </p>
 
           {/* Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8">
             <Link
               href="/explore"
               className="w-full sm:w-auto px-7 py-3.5 bg-emerald-800 hover:bg-emerald-900 text-white rounded-2xl text-sm font-black shadow-xl shadow-emerald-900/20 transition-all flex items-center justify-center gap-2 group hover:scale-[1.02]"
@@ -117,6 +129,41 @@ export default function LandingPage() {
             >
               <span>🛺</span>
               <span>Open Tuk-Tuk Fare Meter</span>
+            </button>
+          </div>
+
+          {/* Quick Traveler Tools Bar */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-12 max-w-3xl mx-auto">
+            <span className="text-[11px] font-black uppercase text-emerald-800 tracking-wider mr-1">
+              Field Tools:
+            </span>
+            <button
+              onClick={() => setShowTrainModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🚂</span>
+              <span>Scenic Train Copilot</span>
+            </button>
+            <button
+              onClick={() => setShowMonsoonModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🌦️</span>
+              <span>Monsoon Radar</span>
+            </button>
+            <button
+              onClick={() => setShowPoyaModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🌕</span>
+              <span>Poya Calendar</span>
+            </button>
+            <button
+              onClick={() => setShowScamModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🛡️</span>
+              <span>Scam Radar & Phrases</span>
             </button>
           </div>
 
@@ -244,6 +291,171 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3.5 Overseas Traveler Field Toolkit */}
+      <section id="traveler-toolkit" className="py-20 max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="text-center max-w-3xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-black uppercase tracking-wider mb-3">
+            <span>🧭 Overseas Traveler Toolkit</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-black text-emerald-950 tracking-tight">
+            Built for the realities of exploring Sri Lanka.
+          </h2>
+          <p className="text-xs sm:text-sm text-gray-600 mt-2.5 leading-relaxed">
+            International travelers face 4 big dilemmas: train seat views, opposite coastal monsoons, nationwide full-moon dry days, and street pushiness. We solved them all with live interactive engines.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Tool Card 1: Scenic Train */}
+          <div className="bg-white rounded-3xl p-6 border border-emerald-100 shadow-md hover:shadow-xl transition-all flex flex-col justify-between space-y-5 group">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-3xl p-2.5 rounded-2xl bg-emerald-50 inline-block">🚂</span>
+                <span className="text-[10px] font-black uppercase bg-emerald-100 text-emerald-900 px-2.5 py-1 rounded-lg">
+                  Kandy ⇄ Ella & Coast
+                </span>
+              </div>
+              <h3 className="text-xl font-black text-gray-950 group-hover:text-emerald-800 transition-colors">
+                Scenic Train Copilot & Side-to-Sit Guide
+              </h3>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Sit on the <strong className="text-emerald-900">Right side</strong> from Kandy to Nanu Oya for cascading tea valleys, and switch to the <strong className="text-emerald-900">Left side</strong> towards Ella for dizzying mountain ravines.
+              </p>
+              <div className="bg-emerald-50/70 p-3 rounded-2xl border border-emerald-100/80 text-[11px] text-emerald-950 space-y-1">
+                <div className="font-bold flex items-center gap-1.5">
+                  <CheckCircle2 size={13} className="text-emerald-700" />
+                  <span>30-Day ticket window reality check & anti-scalper advice</span>
+                </div>
+                <div className="font-bold flex items-center gap-1.5">
+                  <CheckCircle2 size={13} className="text-emerald-700" />
+                  <span>2nd Class Reserved vs. AC vs. Observation carriage truths</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowTrainModal(true)}
+              className="w-full py-3 bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center justify-center gap-2 group-hover:scale-[1.01]"
+            >
+              <Train size={14} />
+              <span>Launch Scenic Train Copilot</span>
+              <ArrowRight size={13} />
+            </button>
+          </div>
+
+          {/* Tool Card 2: Monsoon Radar */}
+          <div className="bg-white rounded-3xl p-6 border border-emerald-100 shadow-md hover:shadow-xl transition-all flex flex-col justify-between space-y-5 group">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-3xl p-2.5 rounded-2xl bg-sky-50 inline-block">🌦️</span>
+                <span className="text-[10px] font-black uppercase bg-sky-100 text-sky-900 px-2.5 py-1 rounded-lg">
+                  Yala vs. Maha Cycles
+                </span>
+              </div>
+              <h3 className="text-xl font-black text-gray-950 group-hover:text-sky-900 transition-colors">
+                Dual-Monsoon Weather Compass
+              </h3>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Sri Lanka is always sunny somewhere! When the Southwest is stormy (May–Sept), the East Coast (Arugam Bay, Nilaveli) has glassy blue seas and clear skies.
+              </p>
+              <div className="bg-sky-50/70 p-3 rounded-2xl border border-sky-100/80 text-[11px] text-sky-950 space-y-1">
+                <div className="font-bold flex items-center gap-1.5">
+                  <CheckCircle2 size={13} className="text-sky-700" />
+                  <span>Interactive 12-month coast and sunshine selector</span>
+                </div>
+                <div className="font-bold flex items-center gap-1.5">
+                  <CheckCircle2 size={13} className="text-sky-700" />
+                  <span>High-elevation mist warnings (Horton Plains 6:00 AM rule)</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowMonsoonModal(true)}
+              className="w-full py-3 bg-sky-800 hover:bg-sky-900 text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center justify-center gap-2 group-hover:scale-[1.01]"
+            >
+              <CloudSun size={14} />
+              <span>Launch Monsoon Radar</span>
+              <ArrowRight size={13} />
+            </button>
+          </div>
+
+          {/* Tool Card 3: Poya Calendar */}
+          <div className="bg-white rounded-3xl p-6 border border-emerald-100 shadow-md hover:shadow-xl transition-all flex flex-col justify-between space-y-5 group">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-3xl p-2.5 rounded-2xl bg-amber-50 inline-block">🌕</span>
+                <span className="text-[10px] font-black uppercase bg-amber-100 text-amber-900 px-2.5 py-1 rounded-lg">
+                  Sacred Holidays & Dry Days
+                </span>
+              </div>
+              <h3 className="text-xl font-black text-gray-950 group-hover:text-amber-900 transition-colors">
+                12-Month Poya Full Moon Calendar
+              </h3>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Every full moon is a sacred national holiday. By law, all alcohol sales (bars, wine stores, and hotels) and meat shops are closed across the island.
+              </p>
+              <div className="bg-amber-50/70 p-3 rounded-2xl border border-amber-100/80 text-[11px] text-amber-950 space-y-1">
+                <div className="font-bold flex items-center gap-1.5">
+                  <CheckCircle2 size={13} className="text-amber-700" />
+                  <span>The 3 Golden Rules: Alcohol ban, pilgrim traffic & temple dress</span>
+                </div>
+                <div className="font-bold flex items-center gap-1.5">
+                  <CheckCircle2 size={13} className="text-amber-700" />
+                  <span>Free community food stalls (Dansalas) during Vesak and Poson</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowPoyaModal(true)}
+              className="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center justify-center gap-2 group-hover:scale-[1.01]"
+            >
+              <Calendar size={14} />
+              <span>Launch Poya Calendar</span>
+              <ArrowRight size={13} />
+            </button>
+          </div>
+
+          {/* Tool Card 4: Scam Radar */}
+          <div className="bg-white rounded-3xl p-6 border border-emerald-100 shadow-md hover:shadow-xl transition-all flex flex-col justify-between space-y-5 group">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-3xl p-2.5 rounded-2xl bg-red-50 inline-block">🛡️</span>
+                <span className="text-[10px] font-black uppercase bg-red-100 text-red-900 px-2.5 py-1 rounded-lg">
+                  Safety & Sinhala Survival
+                </span>
+              </div>
+              <h3 className="text-xl font-black text-gray-950 group-hover:text-red-900 transition-colors">
+                Street-Smart Scam Radar & Phrases
+              </h3>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Recognize inflated spice garden bills, gem appraisal certificates, and aggressive stilt-fishing photo fees before falling into commission traps.
+              </p>
+              <div className="bg-red-50/70 p-3 rounded-2xl border border-red-100/80 text-[11px] text-red-950 space-y-1">
+                <div className="font-bold flex items-center gap-1.5">
+                  <CheckCircle2 size={13} className="text-red-700" />
+                  <span>6 phonetic Sinhala phrases (Polite decline, price asking & thank you)</span>
+                </div>
+                <div className="font-bold flex items-center gap-1.5">
+                  <CheckCircle2 size={13} className="text-red-700" />
+                  <span>1-tap 1990 Suwa Seriya free government ambulance GPS copy</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowScamModal(true)}
+              className="w-full py-3 bg-red-800 hover:bg-red-900 text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center justify-center gap-2 group-hover:scale-[1.01]"
+            >
+              <ShieldAlert size={14} />
+              <span>Launch Scam Radar & Phrases</span>
+              <ArrowRight size={13} />
+            </button>
           </div>
         </div>
       </section>
@@ -476,10 +688,22 @@ export default function LandingPage() {
             <span>Hosted at Cloudflare Colombo Edge</span>
           </div>
 
-          <div className="flex items-center gap-5">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-5">
             <Link href="/explore" className="hover:text-emerald-800 font-bold">Explorer Map</Link>
+            <button onClick={() => setShowTrainModal(true)} className="hover:text-emerald-800 font-bold">
+              🚂 Scenic Train
+            </button>
+            <button onClick={() => setShowMonsoonModal(true)} className="hover:text-emerald-800 font-bold">
+              🌦️ Monsoon Radar
+            </button>
+            <button onClick={() => setShowPoyaModal(true)} className="hover:text-emerald-800 font-bold">
+              🌕 Poya Calendar
+            </button>
+            <button onClick={() => setShowScamModal(true)} className="hover:text-emerald-800 font-bold">
+              🛡️ Scam Radar
+            </button>
             <button onClick={() => setShowTukTukModal(true)} className="hover:text-emerald-800 font-bold">
-              Tuk-Tuk Calculator
+              🛺 Tuk-Tuk Fare
             </button>
             <a 
               href="https://github.com/lahiruhashan/CeylonWander" 
@@ -493,10 +717,30 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* Tuk-Tuk Fare Estimator Modal */}
+      {/* Modals & Tools */}
       <TukTukFareModal
         isOpen={showTukTukModal}
         onClose={() => setShowTukTukModal(false)}
+      />
+
+      <ScenicTrainModal
+        isOpen={showTrainModal}
+        onClose={() => setShowTrainModal(false)}
+      />
+
+      <MonsoonRadarModal
+        isOpen={showMonsoonModal}
+        onClose={() => setShowMonsoonModal(false)}
+      />
+
+      <PoyaCalendarModal
+        isOpen={showPoyaModal}
+        onClose={() => setShowPoyaModal(false)}
+      />
+
+      <ScamRadarModal
+        isOpen={showScamModal}
+        onClose={() => setShowScamModal(false)}
       />
     </div>
   );

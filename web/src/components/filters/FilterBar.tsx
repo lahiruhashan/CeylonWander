@@ -21,6 +21,10 @@ interface FilterBarProps {
   onOpenAddPlace: () => void;
   onOpenSequencer: () => void;
   onOpenTukTukFare?: () => void;
+  onOpenScenicTrain?: () => void;
+  onOpenMonsoonRadar?: () => void;
+  onOpenPoyaCalendar?: () => void;
+  onOpenScamRadar?: () => void;
   placesCount: number;
 }
 
@@ -50,6 +54,10 @@ export default function FilterBar({
   onOpenAddPlace,
   onOpenSequencer,
   onOpenTukTukFare,
+  onOpenScenicTrain,
+  onOpenMonsoonRadar,
+  onOpenPoyaCalendar,
+  onOpenScamRadar,
   placesCount,
 }: FilterBarProps) {
   return (
@@ -127,6 +135,54 @@ export default function FilterBar({
             <span className="hidden sm:inline">Sequence</span>
             <span>Route</span>
           </button>
+
+          {/* Scenic Train Button */}
+          {onOpenScenicTrain && (
+            <button
+              onClick={onOpenScenicTrain}
+              title="Scenic Train (Kandy-Ella & Coastal) Guide"
+              className="flex items-center gap-1 px-2.5 py-1.5 bg-blue-50 text-blue-900 hover:bg-blue-100 border border-blue-200 rounded-xl text-xs font-bold transition-colors"
+            >
+              <span>🚂</span>
+              <span className="hidden xl:inline">Train</span>
+            </button>
+          )}
+
+          {/* Monsoon Weather Button */}
+          {onOpenMonsoonRadar && (
+            <button
+              onClick={onOpenMonsoonRadar}
+              title="Where is it Sunny? Seasonal Monsoon Guide"
+              className="flex items-center gap-1 px-2.5 py-1.5 bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-200 rounded-xl text-xs font-bold transition-colors"
+            >
+              <span>☀️</span>
+              <span className="hidden xl:inline">Weather</span>
+            </button>
+          )}
+
+          {/* Poya Day Button */}
+          {onOpenPoyaCalendar && (
+            <button
+              onClick={onOpenPoyaCalendar}
+              title="Full Moon Poya & Sacred Holidays Guide"
+              className="flex items-center gap-1 px-2.5 py-1.5 bg-purple-50 text-purple-900 hover:bg-purple-100 border border-purple-200 rounded-xl text-xs font-bold transition-colors"
+            >
+              <span>🌕</span>
+              <span className="hidden xl:inline">Poya</span>
+            </button>
+          )}
+
+          {/* Scam Radar Button */}
+          {onOpenScamRadar && (
+            <button
+              onClick={onOpenScamRadar}
+              title="Street-Smart Scam Radar & Sinhala Phrases"
+              className="flex items-center gap-1 px-2.5 py-1.5 bg-rose-50 text-rose-900 hover:bg-rose-100 border border-rose-200 rounded-xl text-xs font-bold transition-colors"
+            >
+              <span>🛡️</span>
+              <span className="hidden xl:inline">Scam Radar</span>
+            </button>
+          )}
 
           {/* + Add Place button */}
           <button
