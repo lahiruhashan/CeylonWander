@@ -29,7 +29,10 @@ CORS_HEADERS = {
 }
 
 def json_response(data: Any, status: int = 200) -> Response:
-    return Response(json.dumps(data), status=status, headers=CORS_HEADERS)
+    try:
+        return Response.json(data, headers=CORS_HEADERS)
+    except Exception:
+        return Response(json.dumps(data), headers=CORS_HEADERS)
 
 def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """Calculate the great circle distance between two points in kilometers."""
@@ -86,12 +89,24 @@ class Default(WorkerEntrypoint):
     Cloudflare Python Worker Native Entrypoint.
     Zero-dependency, sub-2ms latency spatial discovery engine running at Cloudflare Colombo edge.
     """
-    async def fetch(self, request):
+    async def fetch(self, request, env=None):
+        try:
+            return await self._handle_fetch(request)
+        except Exception as e:
+            return json_response({"error": str(e), "type": type(e).__name__}, status=500)
+
+    async def on_fetch(self, request, env=None):
+        try:
+            return await self._handle_fetch(request)
+        except Exception as e:
+            return json_response({"error": str(e), "type": type(e).__name__}, status=500)
+
+    async def _handle_fetch(self, request):
         method = request.method.upper()
 
         # Handle CORS Preflight
         if method == "OPTIONS":
-            return Response("", status=204, headers=CORS_HEADERS)
+            return Response("", headers=CORS_HEADERS)
 
         parsed_url = urllib.parse.urlparse(request.url)
         path = parsed_url.path
@@ -373,3 +388,9 @@ class Default(WorkerEntrypoint):
 
         # Fallback 404
         return json_response({"error": "Endpoint not found", "path": path}, status=404)
+
+# Top-level on_fetch handler for legacy pyodide-entrypoint-helper
+async def on_fetch(request, env=None):
+    handler = Default()
+    return await handler._handle_fetch(request)
+
