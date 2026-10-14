@@ -179,7 +179,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full bg-[#f4f8f4] overflow-hidden font-sans">
+    <div className="flex flex-col h-screen w-full bg-[#05140e] text-[#f8fafc] overflow-hidden font-sans">
       {/* Top sticky navigation and filter bar */}
       <FilterBar
         selectedCategory={selectedCategory}
@@ -216,28 +216,28 @@ export default function HomePage() {
 
       {/* Sync feedback toast banner */}
       {syncNotice && (
-        <div className="bg-emerald-800 text-white text-xs font-semibold px-4 py-2 flex items-center justify-between shadow-md transition-all">
+        <div className="bg-emerald-900 border-b border-emerald-500/30 text-white text-xs font-semibold px-4 py-2 flex items-center justify-between shadow-md transition-all">
           <span>{syncNotice}</span>
-          <button onClick={() => setSyncNotice(null)} className="text-emerald-200 hover:text-white">✕</button>
+          <button onClick={() => setSyncNotice(null)} className="text-emerald-300 hover:text-white">✕</button>
         </div>
       )}
 
       {/* Main content grid: sidebar list & interactive vector map */}
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
         {/* Left Side: Places List */}
-        <div className="w-full md:w-[420px] lg:w-[460px] h-[45vh] md:h-full flex flex-col border-r border-emerald-200 bg-[#f9fcf9] z-10 shrink-0">
+        <div className="w-full md:w-[420px] lg:w-[460px] h-[45vh] md:h-full flex flex-col border-r border-white/10 bg-[#061811] z-10 shrink-0">
           {/* Header count & status */}
-          <div className="px-4 py-2.5 bg-emerald-50/90 border-b border-emerald-200/90 flex items-center justify-between text-xs">
-            <span className="font-semibold text-emerald-950 truncate pr-2">
+          <div className="px-4 py-2.5 bg-[#0a2318]/90 border-b border-white/10 flex items-center justify-between text-xs">
+            <span className="font-semibold text-white truncate pr-2">
               {currentTopic ? (
                 <>
-                  🔥 <span className="text-amber-800 font-bold">{currentTopic.label}:</span>{' '}
-                  <strong className="text-emerald-800">{displayedPlaces.length}</strong> highlights
+                  🔥 <span className="text-amber-300 font-bold">{currentTopic.label}:</span>{' '}
+                  <strong className="text-emerald-400 font-black">{displayedPlaces.length}</strong> highlights
                 </>
               ) : (
                 <>
-                  Found <strong className="text-emerald-800">{displayedPlaces.length}</strong> places in{' '}
-                  <span className="font-bold text-gray-800">{currentRegion?.shortName || 'Sri Lanka'}</span>
+                  Found <strong className="text-emerald-400 font-black">{displayedPlaces.length}</strong> places in{' '}
+                  <span className="font-bold text-gray-200">{currentRegion?.shortName || 'Sri Lanka'}</span>
                 </>
               )}
             </span>
@@ -245,14 +245,14 @@ export default function HomePage() {
               {selectedHotTopicId && (
                 <button
                   onClick={() => setSelectedHotTopicId(null)}
-                  className="text-[11px] text-amber-700 hover:text-amber-900 font-bold underline"
+                  className="text-[11px] text-amber-400 hover:text-amber-300 font-bold underline"
                 >
                   Clear topic
                 </button>
               )}
               <button
                 onClick={() => setShowAddPlaceModal(true)}
-                className="text-[11px] text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1"
+                className="text-[11px] text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1"
               >
                 <Plus size={12} />
                 <span>Add Custom</span>
@@ -267,9 +267,9 @@ export default function HomePage() {
                 Calculating topography-adjusted travel times...
               </div>
             ) : displayedPlaces.length === 0 ? (
-              <div className="text-center py-16 px-4 text-gray-500 text-xs space-y-3">
-                <Compass className="w-8 h-8 text-gray-400 mx-auto" />
-                <p className="font-medium">
+              <div className="text-center py-16 px-4 text-gray-400 text-xs space-y-3">
+                <Compass className="w-8 h-8 text-gray-500 mx-auto" />
+                <p className="font-medium text-gray-300">
                   {selectedHotTopicId
                     ? `No places found matching "${currentTopic?.label}" in this area.`
                     : `No places found within ${radiusKm} km of this point.`}
@@ -278,14 +278,14 @@ export default function HomePage() {
                   {selectedHotTopicId && (
                     <button
                       onClick={() => setSelectedHotTopicId(null)}
-                      className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold shadow-xs text-xs"
+                      className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-[#1a0f02] rounded-xl font-bold shadow-xs text-xs"
                     >
                       Show All Highlights
                     </button>
                   )}
                   <button
                     onClick={() => setRadiusKm(250)}
-                    className="text-emerald-700 underline text-[11px]"
+                    className="text-emerald-400 hover:text-emerald-300 underline text-[11px]"
                   >
                     Expand to Nationwide View (250 km)
                   </button>
@@ -306,7 +306,7 @@ export default function HomePage() {
         </div>
 
         {/* Right Side: Map Canvas */}
-        <div className="flex-1 h-[55vh] md:h-full relative p-2 md:p-3 bg-[#eaf4ea]">
+        <div className="flex-1 h-[55vh] md:h-full relative p-2 md:p-3 bg-[#030d08]">
           <CeylonMap
             center={mapCenter}
             radiusKm={radiusKm}

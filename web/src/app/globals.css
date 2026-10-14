@@ -1,67 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --primary-green: #047857;
-  --deep-forest: #064e3b;
-  --light-mint: #f4f8f4;
+  --primary-emerald: #10b981;
+  --bg-deep: #05140e;
+  --card-dark: #0a2318;
 }
 
 body {
-  color: #064e3b;
-  background-color: #f4f8f4;
-  font-family: inherit;
+  color: #f8fafc;
+  background-color: #05140e;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
-/* Force rich light green theme even if OS has dark mode */
-.dark body {
-  color: #064e3b;
-  background-color: #f4f8f4;
-}
-
-/* MapLibre Controls in Green Theme */
+/* MapLibre Controls in Dark Glass Theme */
 .maplibregl-ctrl-group {
-  background-color: #ffffff !important;
-  border: 1px solid #d1fae5 !important;
-  box-shadow: 0 4px 12px -2px rgba(6, 78, 59, 0.15) !important;
+  background-color: rgba(10, 35, 24, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
   border-radius: 12px !important;
   overflow: hidden;
 }
 
 .maplibregl-ctrl-group button {
-  border-bottom: 1px solid #ecfdf5 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  filter: invert(1) hue-rotate(180deg);
 }
 
 .maplibregl-ctrl-group button:hover {
-  background-color: #ecfdf5 !important;
+  background-color: rgba(16, 185, 129, 0.2) !important;
 }
 
 .maplibregl-ctrl-attrib {
-  background-color: rgba(255, 255, 255, 0.85) !important;
-  color: #065f46 !important;
+  background-color: rgba(5, 20, 14, 0.8) !important;
+  color: #94a3b8 !important;
   font-size: 10px !important;
+  backdrop-filter: blur(8px) !important;
 }
 
 .maplibregl-ctrl-attrib a {
-  color: #047857 !important;
+  color: #34d399 !important;
   font-weight: 600 !important;
 }
 
-/* Custom green scrollbars */
+/* Custom dark emerald scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f0fdf4;
+  background: #05140e;
 }
 ::-webkit-scrollbar-thumb {
-  background: #a7f3d0;
+  background: rgba(16, 185, 129, 0.3);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #34d399;
+  background: rgba(16, 185, 129, 0.6);
 }
 
 @layer utilities {
