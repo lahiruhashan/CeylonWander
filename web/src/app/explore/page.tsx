@@ -19,6 +19,16 @@ import MonsoonRadarModal from '@/components/weather/MonsoonRadarModal';
 import PoyaCalendarModal from '@/components/culture/PoyaCalendarModal';
 import ScamRadarModal from '@/components/safety/ScamRadarModal';
 import TripSequencerPanel from '@/components/itinerary/TripSequencerPanel';
+import MultiDayItineraryModal from '@/components/itinerary/MultiDayItineraryModal';
+import WildlifeSafariModal from '@/components/wildlife/WildlifeSafariModal';
+import FoodDecoderModal from '@/components/food/FoodDecoderModal';
+import ConnectivityModal from '@/components/connectivity/ConnectivityModal';
+import BudgetCalculatorModal from '@/components/budget/BudgetCalculatorModal';
+import SurfRadarModal from '@/components/surf/SurfRadarModal';
+import SelfDriveModal from '@/components/driving/SelfDriveModal';
+import PackingChecklistModal from '@/components/checklist/PackingChecklistModal';
+import HealthFieldGuideModal from '@/components/health/HealthFieldGuideModal';
+import HiddenGemsModal from '@/components/gems/HiddenGemsModal';
 import { Compass, Plus } from 'lucide-react';
 
 // Dynamic import for MapLibre GL to disable SSR
@@ -52,6 +62,16 @@ export default function HomePage() {
   const [showMonsoonModal, setShowMonsoonModal] = useState(false);
   const [showPoyaModal, setShowPoyaModal] = useState(false);
   const [showScamModal, setShowScamModal] = useState(false);
+  const [showMultiDayModal, setShowMultiDayModal] = useState(false);
+  const [showWildlifeModal, setShowWildlifeModal] = useState(false);
+  const [showFoodModal, setShowFoodModal] = useState(false);
+  const [showConnectivityModal, setShowConnectivityModal] = useState(false);
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [showSurfModal, setShowSurfModal] = useState(false);
+  const [showSelfDriveModal, setShowSelfDriveModal] = useState(false);
+  const [showChecklistModal, setShowChecklistModal] = useState(false);
+  const [showHealthModal, setShowHealthModal] = useState(false);
+  const [showHiddenGemsModal, setShowHiddenGemsModal] = useState(false);
   const [syncNotice, setSyncNotice] = useState<string | null>(null);
 
   // Sequencer State
@@ -181,6 +201,16 @@ export default function HomePage() {
         onOpenMonsoonRadar={() => setShowMonsoonModal(true)}
         onOpenPoyaCalendar={() => setShowPoyaModal(true)}
         onOpenScamRadar={() => setShowScamModal(true)}
+        onOpenMultiDayPlanner={() => setShowMultiDayModal(true)}
+        onOpenWildlifeSafari={() => setShowWildlifeModal(true)}
+        onOpenFoodDecoder={() => setShowFoodModal(true)}
+        onOpenConnectivity={() => setShowConnectivityModal(true)}
+        onOpenBudget={() => setShowBudgetModal(true)}
+        onOpenSurfRadar={() => setShowSurfModal(true)}
+        onOpenSelfDrive={() => setShowSelfDriveModal(true)}
+        onOpenChecklist={() => setShowChecklistModal(true)}
+        onOpenHealthGuide={() => setShowHealthModal(true)}
+        onOpenHiddenGems={() => setShowHiddenGemsModal(true)}
         placesCount={displayedPlaces.length}
       />
 
@@ -354,6 +384,60 @@ export default function HomePage() {
       <ScamRadarModal
         isOpen={showScamModal}
         onClose={() => setShowScamModal(false)}
+      />
+
+      <MultiDayItineraryModal
+        isOpen={showMultiDayModal}
+        onClose={() => setShowMultiDayModal(false)}
+      />
+
+      <WildlifeSafariModal
+        isOpen={showWildlifeModal}
+        onClose={() => setShowWildlifeModal(false)}
+      />
+
+      <FoodDecoderModal
+        isOpen={showFoodModal}
+        onClose={() => setShowFoodModal(false)}
+      />
+
+      <ConnectivityModal
+        isOpen={showConnectivityModal}
+        onClose={() => setShowConnectivityModal(false)}
+      />
+
+      <BudgetCalculatorModal
+        isOpen={showBudgetModal}
+        onClose={() => setShowBudgetModal(false)}
+      />
+
+      <SurfRadarModal
+        isOpen={showSurfModal}
+        onClose={() => setShowSurfModal(false)}
+      />
+
+      <SelfDriveModal
+        isOpen={showSelfDriveModal}
+        onClose={() => setShowSelfDriveModal(false)}
+      />
+
+      <PackingChecklistModal
+        isOpen={showChecklistModal}
+        onClose={() => setShowChecklistModal(false)}
+      />
+
+      <HealthFieldGuideModal
+        isOpen={showHealthModal}
+        onClose={() => setShowHealthModal(false)}
+      />
+
+      <HiddenGemsModal
+        isOpen={showHiddenGemsModal}
+        onClose={() => setShowHiddenGemsModal(false)}
+        onSelectCoordinates={(coords) => {
+          setMapCenter(coords);
+          setRadiusKm(30);
+        }}
       />
 
       {reportPlace && (

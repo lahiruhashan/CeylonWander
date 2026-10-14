@@ -25,6 +25,16 @@ interface FilterBarProps {
   onOpenMonsoonRadar?: () => void;
   onOpenPoyaCalendar?: () => void;
   onOpenScamRadar?: () => void;
+  onOpenMultiDayPlanner?: () => void;
+  onOpenWildlifeSafari?: () => void;
+  onOpenFoodDecoder?: () => void;
+  onOpenConnectivity?: () => void;
+  onOpenBudget?: () => void;
+  onOpenSurfRadar?: () => void;
+  onOpenSelfDrive?: () => void;
+  onOpenChecklist?: () => void;
+  onOpenHealthGuide?: () => void;
+  onOpenHiddenGems?: () => void;
   placesCount: number;
 }
 
@@ -58,6 +68,16 @@ export default function FilterBar({
   onOpenMonsoonRadar,
   onOpenPoyaCalendar,
   onOpenScamRadar,
+  onOpenMultiDayPlanner,
+  onOpenWildlifeSafari,
+  onOpenFoodDecoder,
+  onOpenConnectivity,
+  onOpenBudget,
+  onOpenSurfRadar,
+  onOpenSelfDrive,
+  onOpenChecklist,
+  onOpenHealthGuide,
+  onOpenHiddenGems,
   placesCount,
 }: FilterBarProps) {
   return (
@@ -209,6 +229,123 @@ export default function FilterBar({
             <span className="hidden lg:inline">Offline</span>
           </button>
         </div>
+      </div>
+
+      {/* Row 1.5: Overseas Traveler Toolkit Toolbar */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar text-xs">
+        <span className="text-[10px] font-black uppercase text-emerald-800 tracking-wider bg-emerald-100/60 px-2 py-1 rounded-lg shrink-0">
+          Field Tools:
+        </span>
+
+        {onOpenMultiDayPlanner && (
+          <button
+            onClick={onOpenMultiDayPlanner}
+            title="Multi-Day Itinerary Generator (3, 7, 10, 14 Days)"
+            className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-emerald-50 text-emerald-950 border border-emerald-200 rounded-xl font-bold whitespace-nowrap transition-colors shrink-0 shadow-xs"
+          >
+            <span>🗺️</span>
+            <span>Itinerary</span>
+          </button>
+        )}
+
+        {onOpenWildlifeSafari && (
+          <button
+            onClick={onOpenWildlifeSafari}
+            title="National Park Wildlife & Safari Calendar"
+            className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-emerald-50 text-emerald-950 border border-emerald-200 rounded-xl font-bold whitespace-nowrap transition-colors shrink-0 shadow-xs"
+          >
+            <span>🐘</span>
+            <span>Safaris</span>
+          </button>
+        )}
+
+        {onOpenFoodDecoder && (
+          <button
+            onClick={onOpenFoodDecoder}
+            title="Sri Lankan Food & Street Eatery Decoder"
+            className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-amber-50 text-amber-950 border border-amber-200 rounded-xl font-bold whitespace-nowrap transition-colors shrink-0 shadow-xs"
+          >
+            <span>🍛</span>
+            <span>Food Guide</span>
+          </button>
+        )}
+
+        {onOpenBudget && (
+          <button
+            onClick={onOpenBudget}
+            title="Travel Budget & Real-Cost Calculator"
+            className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-emerald-50 text-emerald-950 border border-emerald-200 rounded-xl font-bold whitespace-nowrap transition-colors shrink-0 shadow-xs"
+          >
+            <span>💰</span>
+            <span>Budget</span>
+          </button>
+        )}
+
+        {onOpenSurfRadar && (
+          <button
+            onClick={onOpenSurfRadar}
+            title="Surf Spot & Wave Season Navigator"
+            className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-sky-50 text-sky-950 border border-sky-200 rounded-xl font-bold whitespace-nowrap transition-colors shrink-0 shadow-xs"
+          >
+            <span>🏄</span>
+            <span>Surf Radar</span>
+          </button>
+        )}
+
+        {onOpenHiddenGems && (
+          <button
+            onClick={onOpenHiddenGems}
+            title="Hidden Gems & Off-The-Beaten-Path Directory"
+            className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-emerald-50 text-emerald-950 border border-emerald-200 rounded-xl font-bold whitespace-nowrap transition-colors shrink-0 shadow-xs"
+          >
+            <span>🎒</span>
+            <span>Secret Gems</span>
+          </button>
+        )}
+
+        {onOpenConnectivity && (
+          <button
+            onClick={onOpenConnectivity}
+            title="Airport SIM, eSIM & Mountain Dead-Zones"
+            className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-blue-50 text-blue-950 border border-blue-200 rounded-xl font-bold whitespace-nowrap transition-colors shrink-0 shadow-xs"
+          >
+            <span>📶</span>
+            <span>SIM / Data</span>
+          </button>
+        )}
+
+        {onOpenSelfDrive && (
+          <button
+            onClick={onOpenSelfDrive}
+            title="Self-Drive Tuk-Tuk & Car Rental Rules"
+            className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-amber-50 text-amber-950 border border-amber-200 rounded-xl font-bold whitespace-nowrap transition-colors shrink-0 shadow-xs"
+          >
+            <span>🛺</span>
+            <span>Self-Drive</span>
+          </button>
+        )}
+
+        {onOpenChecklist && (
+          <button
+            onClick={onOpenChecklist}
+            title="Dynamic Weather-Aware Packing Checklist"
+            className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-teal-50 text-teal-950 border border-teal-200 rounded-xl font-bold whitespace-nowrap transition-colors shrink-0 shadow-xs"
+          >
+            <span>🧳</span>
+            <span>Packing</span>
+          </button>
+        )}
+
+        {onOpenHealthGuide && (
+          <button
+            onClick={onOpenHealthGuide}
+            title="Health, Leech Protocol & 1990 Ambulance"
+            className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-rose-50 text-rose-950 border border-rose-200 rounded-xl font-bold whitespace-nowrap transition-colors shrink-0 shadow-xs"
+          >
+            <span>🏥</span>
+            <span>Health & 1990</span>
+          </button>
+        )}
       </div>
 
       {/* Row 2: Hot Topics / Trending Experiences as Clickables */}

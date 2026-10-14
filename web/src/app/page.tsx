@@ -8,6 +8,16 @@ import ScenicTrainModal from '@/components/train/ScenicTrainModal';
 import MonsoonRadarModal from '@/components/weather/MonsoonRadarModal';
 import PoyaCalendarModal from '@/components/culture/PoyaCalendarModal';
 import ScamRadarModal from '@/components/safety/ScamRadarModal';
+import MultiDayItineraryModal from '@/components/itinerary/MultiDayItineraryModal';
+import WildlifeSafariModal from '@/components/wildlife/WildlifeSafariModal';
+import FoodDecoderModal from '@/components/food/FoodDecoderModal';
+import ConnectivityModal from '@/components/connectivity/ConnectivityModal';
+import BudgetCalculatorModal from '@/components/budget/BudgetCalculatorModal';
+import SurfRadarModal from '@/components/surf/SurfRadarModal';
+import SelfDriveModal from '@/components/driving/SelfDriveModal';
+import PackingChecklistModal from '@/components/checklist/PackingChecklistModal';
+import HealthFieldGuideModal from '@/components/health/HealthFieldGuideModal';
+import HiddenGemsModal from '@/components/gems/HiddenGemsModal';
 
 export default function LandingPage() {
   const [showTukTukModal, setShowTukTukModal] = useState(false);
@@ -15,6 +25,16 @@ export default function LandingPage() {
   const [showMonsoonModal, setShowMonsoonModal] = useState(false);
   const [showPoyaModal, setShowPoyaModal] = useState(false);
   const [showScamModal, setShowScamModal] = useState(false);
+  const [showMultiDayModal, setShowMultiDayModal] = useState(false);
+  const [showWildlifeModal, setShowWildlifeModal] = useState(false);
+  const [showFoodModal, setShowFoodModal] = useState(false);
+  const [showConnectivityModal, setShowConnectivityModal] = useState(false);
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [showSurfModal, setShowSurfModal] = useState(false);
+  const [showSelfDriveModal, setShowSelfDriveModal] = useState(false);
+  const [showChecklistModal, setShowChecklistModal] = useState(false);
+  const [showHealthModal, setShowHealthModal] = useState(false);
+  const [showHiddenGemsModal, setShowHiddenGemsModal] = useState(false);
 
   // Quick interactive fare preview state on landing page
   const [previewKm, setPreviewKm] = useState(6);
@@ -133,16 +153,23 @@ export default function LandingPage() {
           </div>
 
           {/* Quick Traveler Tools Bar */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-12 max-w-3xl mx-auto">
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-12 max-w-4xl mx-auto">
             <span className="text-[11px] font-black uppercase text-emerald-800 tracking-wider mr-1">
               Field Tools:
             </span>
+            <button
+              onClick={() => setShowMultiDayModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🗺️</span>
+              <span>Itinerary Generator</span>
+            </button>
             <button
               onClick={() => setShowTrainModal(true)}
               className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
             >
               <span>🚂</span>
-              <span>Scenic Train Copilot</span>
+              <span>Scenic Train</span>
             </button>
             <button
               onClick={() => setShowMonsoonModal(true)}
@@ -150,6 +177,41 @@ export default function LandingPage() {
             >
               <span>🌦️</span>
               <span>Monsoon Radar</span>
+            </button>
+            <button
+              onClick={() => setShowWildlifeModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🐘</span>
+              <span>Wildlife Safaris</span>
+            </button>
+            <button
+              onClick={() => setShowFoodModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🍛</span>
+              <span>Food Guide</span>
+            </button>
+            <button
+              onClick={() => setShowBudgetModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>💰</span>
+              <span>Budget Calculator</span>
+            </button>
+            <button
+              onClick={() => setShowSurfModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🏄</span>
+              <span>Surf Radar</span>
+            </button>
+            <button
+              onClick={() => setShowHiddenGemsModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🎒</span>
+              <span>Hidden Gems</span>
             </button>
             <button
               onClick={() => setShowPoyaModal(true)}
@@ -163,7 +225,35 @@ export default function LandingPage() {
               className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
             >
               <span>🛡️</span>
-              <span>Scam Radar & Phrases</span>
+              <span>Scam Radar</span>
+            </button>
+            <button
+              onClick={() => setShowSelfDriveModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🛺</span>
+              <span>Self-Drive Rules</span>
+            </button>
+            <button
+              onClick={() => setShowChecklistModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🧳</span>
+              <span>Packing Checklist</span>
+            </button>
+            <button
+              onClick={() => setShowHealthModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🏥</span>
+              <span>Health & 1990</span>
+            </button>
+            <button
+              onClick={() => setShowConnectivityModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>📶</span>
+              <span>SIM & eSIM</span>
             </button>
           </div>
 
@@ -741,6 +831,56 @@ export default function LandingPage() {
       <ScamRadarModal
         isOpen={showScamModal}
         onClose={() => setShowScamModal(false)}
+      />
+
+      <MultiDayItineraryModal
+        isOpen={showMultiDayModal}
+        onClose={() => setShowMultiDayModal(false)}
+      />
+
+      <WildlifeSafariModal
+        isOpen={showWildlifeModal}
+        onClose={() => setShowWildlifeModal(false)}
+      />
+
+      <FoodDecoderModal
+        isOpen={showFoodModal}
+        onClose={() => setShowFoodModal(false)}
+      />
+
+      <ConnectivityModal
+        isOpen={showConnectivityModal}
+        onClose={() => setShowConnectivityModal(false)}
+      />
+
+      <BudgetCalculatorModal
+        isOpen={showBudgetModal}
+        onClose={() => setShowBudgetModal(false)}
+      />
+
+      <SurfRadarModal
+        isOpen={showSurfModal}
+        onClose={() => setShowSurfModal(false)}
+      />
+
+      <SelfDriveModal
+        isOpen={showSelfDriveModal}
+        onClose={() => setShowSelfDriveModal(false)}
+      />
+
+      <PackingChecklistModal
+        isOpen={showChecklistModal}
+        onClose={() => setShowChecklistModal(false)}
+      />
+
+      <HealthFieldGuideModal
+        isOpen={showHealthModal}
+        onClose={() => setShowHealthModal(false)}
+      />
+
+      <HiddenGemsModal
+        isOpen={showHiddenGemsModal}
+        onClose={() => setShowHiddenGemsModal(false)}
       />
     </div>
   );
