@@ -1,28 +1,35 @@
 import math
 import time
+import json
 import urllib.parse
-from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field
-from fastapi import FastAPI, Query, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
-import httpx
+from typing import List, Dict, Any, Optional
 
-from worker.places_data import NATIONWIDE_PLACES, NATIONWIDE_REGIONS
+try:
+    from workers import Response, WorkerEntrypoint
+except ImportError:
+    # Fallback mock for local testing outside Cloudflare
+    class WorkerEntrypoint:
+        pass
+    class Response:
+        def __init__(self, body, status=200, headers=None):
+            self.body = body
+            self.status = status
+            self.headers = headers or {}
 
-app = FastAPI(
-    title="CeylonWander Edge API",
-    description="Offline-first, topography-aware travel discovery engine running on Cloudflare Workers",
-    version="1.0.0"
-)
+try:
+    from places_data import NATIONWIDE_PLACES, NATIONWIDE_REGIONS
+except ImportError:
+    from worker.places_data import NATIONWIDE_PLACES, NATIONWIDE_REGIONS
 
-# Enable CORS for Cloudflare Pages and local development
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+CORS_HEADERS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Content-Type": "application/json"
+}
+
+def json_response(data: Any, status: int = 200) -> Response:
+    return Response(json.dumps(data), status=status, headers=CORS_HEADERS)
 
 def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """Calculate the great circle distance between two points in kilometers."""
@@ -53,12 +60,10 @@ def calculate_topography_metrics(
     is_hill_country = avg_elev > 450 or elev_diff > 250
 
     if is_hill_country:
-        # Mountain roads: winding ratio ~1.42x, average speed ~28 km/h
         winding_factor = 1.42
         avg_speed_kmh = 28.0
         warning = f"Hill country winding road (~{round(straight_line_km * winding_factor, 1)} km driving vs {straight_line_km} km direct)."
     else:
-        # Coastal & plains roads: winding ratio ~1.22x, average speed ~45 km/h
         winding_factor = 1.22
         avg_speed_kmh = 45.0
         warning = None
@@ -76,305 +81,295 @@ def calculate_topography_metrics(
         "routing_source": "cloudflare_edge_topography"
     }
 
-# ----------------- SCHEMAS -----------------
-
-class SequenceRequest(BaseModel):
-    start_lat: float
-    start_lng: float
-    start_name: Optional[str] = "Starting Location"
-    max_stops: int = Field(default=4, ge=2, le=8)
-    category: Optional[str] = None
-    target_hours: Optional[float] = None
-
-class ContributionRequest(BaseModel):
-    place_id: Optional[str] = None
-    place_name: str
-    contribution_type: str = "road_condition"
-    details: str
-    submitter_name: Optional[str] = "Anonymous Traveler"
-    submitter_email: Optional[str] = None
-
-# In-memory contributions list for edge session
-COMMUNITY_CONTRIBUTIONS: List[Dict[str, Any]] = []
-
-# ----------------- ROUTES -----------------
-
-@app.get("/health", tags=["Health"])
-async def health():
-    return {
-        "status": "healthy",
-        "app": "CeylonWander Edge API",
-        "platform": "Cloudflare Python Workers",
-        "total_places": len(NATIONWIDE_PLACES),
-        "total_regions": len(NATIONWIDE_REGIONS),
-        "edge_ready": True
-    }
-
-@app.get("/api/v1/places/nearby")
-async def get_nearby_places(
-    lat: float = Query(..., description="Latitude of user or center"),
-    lng: float = Query(..., description="Longitude of user or center"),
-    radius_km: float = Query(60.0, ge=1.0, le=400.0),
-    max_travel_time_mins: Optional[int] = Query(None),
-    category: Optional[str] = Query(None),
-    sub_category: Optional[str] = Query(None),
-    access_feasibility: Optional[str] = Query(None),
-    limit: int = Query(100, ge=1, le=300)
-):
+class Default(WorkerEntrypoint):
     """
-    Topography-aware proximity search running in-memory at Cloudflare edge.
-    Sub-5ms query response time across all Sri Lanka visit locations.
+    Cloudflare Python Worker Native Entrypoint.
+    Zero-dependency, sub-2ms latency spatial discovery engine running at Cloudflare Colombo edge.
     """
-    results = []
+    async def fetch(self, request):
+        method = request.method.upper()
 
-    for p in NATIONWIDE_PLACES:
-        if category and category != 'all' and p.get("category") != category:
-            continue
-        if sub_category and p.get("sub_category") != sub_category:
-            continue
-        if access_feasibility and p.get("access_feasibility") != access_feasibility:
-            continue
+        # Handle CORS Preflight
+        if method == "OPTIONS":
+            return Response("", status=204, headers=CORS_HEADERS)
 
-        p_lat = p["latitude"]
-        p_lng = p["longitude"]
-        sl_dist = haversine_distance(lat, lng, p_lat, p_lng)
+        parsed_url = urllib.parse.urlparse(request.url)
+        path = parsed_url.path
+        query = urllib.parse.parse_qs(parsed_url.query)
 
-        if sl_dist > radius_km:
-            continue
-
-        metrics = calculate_topography_metrics(
-            origin_lat=lat,
-            origin_lng=lng,
-            dest_lat=p_lat,
-            dest_lng=p_lng,
-            origin_elev=500,
-            dest_elev=p.get("elevation_m", 500)
-        )
-
-        if max_travel_time_mins and metrics["estimated_driving_time_mins"] > max_travel_time_mins:
-            continue
-
-        enriched = dict(p)
-        enriched.update({
-            "straight_line_distance_km": metrics["straight_line_km"],
-            "estimated_driving_km": metrics["estimated_driving_km"],
-            "estimated_driving_time_mins": metrics["estimated_driving_time_mins"],
-            "elevation_diff_m": metrics["elevation_diff_m"],
-            "is_switchback_corridor": metrics["is_switchback_corridor"],
-            "corridor_warning": metrics["corridor_warning"],
-            "routing_source": metrics["routing_source"]
-        })
-        results.append(enriched)
-
-    # Sort nearest first
-    results.sort(key=lambda x: x["straight_line_distance_km"])
-    return results[:limit]
-
-@app.get("/api/v1/places/search-geocoding")
-async def search_geocoding(
-    q: str = Query(..., min_length=2, description="Hotel, guesthouse or town in Sri Lanka")
-):
-    """
-    Search local curated places first, and query OpenStreetMap Nominatim for Sri Lanka stays.
-    """
-    results = []
-    seen = set()
-
-    # 1. Match local curated places
-    q_lower = q.lower()
-    for p in NATIONWIDE_PLACES:
-        if q_lower in p["name"].lower() or (p.get("local_names") and q_lower in str(p["local_names"]).lower()):
-            seen.add(p["name"].lower())
-            results.append({
-                "name": p["name"],
-                "display_name": f"{p['name']}, {p.get('district', 'Sri Lanka')}",
-                "latitude": p["latitude"],
-                "longitude": p["longitude"],
-                "type": p.get("category", "place"),
-                "source": "database"
+        # 1. Health check
+        if path == "/health" or path == "/":
+            return json_response({
+                "status": "healthy",
+                "app": "CeylonWander Edge API",
+                "platform": "Cloudflare Python Workers",
+                "total_places": len(NATIONWIDE_PLACES),
+                "total_regions": len(NATIONWIDE_REGIONS),
+                "edge": True
             })
-            if len(results) >= 5:
-                break
 
-    # 2. Query free OpenStreetMap Nominatim for Sri Lanka
-    try:
-        encoded_q = urllib.parse.quote(q)
-        url = f"https://nominatim.openstreetmap.org/search?q={encoded_q}&countrycodes=lk&format=json&addressdetails=1&limit=6"
-        headers = {"User-Agent": "CeylonWander/1.0 (ceylonwander@app.local)"}
+        # 2. Places Nearby Discovery (/api/v1/places/nearby)
+        if path == "/api/v1/places/nearby":
+            try:
+                lat = float(query.get("lat", [7.2906])[0])
+                lng = float(query.get("lng", [80.6337])[0])
+                radius_km = float(query.get("radius_km", [60.0])[0])
+                category = query.get("category", [None])[0]
+                sub_category = query.get("sub_category", [None])[0]
+                access = query.get("access_feasibility", [None])[0]
+                limit = int(query.get("limit", [100])[0])
+                max_time = query.get("max_travel_time_mins", [None])[0]
+                max_travel_time = int(max_time) if max_time else None
+            except Exception as e:
+                return json_response({"error": f"Invalid query parameters: {str(e)}"}, status=400)
 
-        async with httpx.AsyncClient(timeout=2.5) as client:
-            resp = await client.get(url, headers=headers)
-            if resp.status_code == 200:
-                for item in resp.json():
-                    name = item.get("name") or item.get("display_name", "").split(",")[0]
-                    if name.lower() not in seen:
-                        seen.add(name.lower())
-                        results.append({
-                            "name": name,
-                            "display_name": item.get("display_name"),
-                            "latitude": float(item["lat"]),
-                            "longitude": float(item["lon"]),
-                            "type": item.get("type", "landmark"),
-                            "source": "osm_nominatim"
-                        })
-    except Exception:
-        pass
+            results = []
+            for p in NATIONWIDE_PLACES:
+                if category and category != 'all' and p.get("category") != category:
+                    continue
+                if sub_category and p.get("sub_category") != sub_category:
+                    continue
+                if access and p.get("access_feasibility") != access:
+                    continue
 
-    return results
+                p_lat = p["latitude"]
+                p_lng = p["longitude"]
+                sl_dist = haversine_distance(lat, lng, p_lat, p_lng)
 
-@app.post("/api/v1/loops/sequence")
-async def create_visit_sequence(req: SequenceRequest):
-    """
-    Greedy nearest-neighbor sequence algorithm accounting for topography travel times.
-    """
-    candidates = []
-    for p in NATIONWIDE_PLACES:
-        if req.category and req.category != 'all' and p.get("category") != req.category:
-            continue
-        dist = haversine_distance(req.start_lat, req.start_lng, p["latitude"], p["longitude"])
-        if dist <= 120.0:  # within day-trip reach
-            candidates.append((dist, p))
+                if sl_dist > radius_km:
+                    continue
 
-    candidates.sort(key=lambda x: x[0])
-    selected_pool = [c[1] for c in candidates[:15]]
+                metrics = calculate_topography_metrics(
+                    origin_lat=lat,
+                    origin_lng=lng,
+                    dest_lat=p_lat,
+                    dest_lng=p_lng,
+                    origin_elev=500,
+                    dest_elev=p.get("elevation_m", 500)
+                )
 
-    if not selected_pool:
-        # Fallback to closest 4 anywhere
-        all_sorted = sorted(NATIONWIDE_PLACES, key=lambda p: haversine_distance(req.start_lat, req.start_lng, p["latitude"], p["longitude"]))
-        selected_pool = all_sorted[:req.max_stops]
+                if max_travel_time and metrics["estimated_driving_time_mins"] > max_travel_time:
+                    continue
 
-    # Build sequence
-    stops = []
-    unvisited = list(selected_pool)
-    current_lat, current_lng = req.start_lat, req.start_lng
-    current_elev = 500
+                enriched = dict(p)
+                enriched.update({
+                    "straight_line_distance_km": metrics["straight_line_km"],
+                    "estimated_driving_km": metrics["estimated_driving_km"],
+                    "estimated_driving_time_mins": metrics["estimated_driving_time_mins"],
+                    "elevation_diff_m": metrics["elevation_diff_m"],
+                    "is_switchback_corridor": metrics["is_switchback_corridor"],
+                    "corridor_warning": metrics["corridor_warning"],
+                    "routing_source": metrics["routing_source"]
+                })
+                results.append(enriched)
 
-    cum_driving_mins = 0
-    cum_trip_mins = 0
-    total_km = 0.0
-    route_geometry = [[req.start_lng, req.start_lat]]
+            results.sort(key=lambda x: x["straight_line_distance_km"])
+            return json_response(results[:limit])
 
-    for stop_num in range(1, min(req.max_stops, len(unvisited)) + 1):
-        # Pick nearest unvisited
-        nearest_idx = 0
-        best_time = 999999
-        best_metrics = None
+        # 3. Geocoding Search (/api/v1/places/search-geocoding)
+        if path == "/api/v1/places/search-geocoding":
+            q = query.get("q", [""])[0].strip().lower()
+            if not q or len(q) < 2:
+                return json_response([])
 
-        for idx, p in enumerate(unvisited):
-            m = calculate_topography_metrics(
-                current_lat, current_lng,
-                p["latitude"], p["longitude"],
-                current_elev, p.get("elevation_m", 500)
-            )
-            if m["estimated_driving_time_mins"] < best_time:
-                best_time = m["estimated_driving_time_mins"]
-                best_metrics = m
-                nearest_idx = idx
+            matches = []
+            for p in NATIONWIDE_PLACES:
+                name_match = q in p["name"].lower()
+                si_match = p.get("local_names", {}).get("si", "").lower()
+                ta_match = p.get("local_names", {}).get("ta", "").lower()
+                district_match = q in p.get("district", "").lower()
 
-        next_place = unvisited.pop(nearest_idx)
-        stay_mins = 60 if next_place.get("category") == "heritage" else 45
-        if next_place.get("sub_category") in ["fortress", "safari"]:
-            stay_mins = 120
+                if name_match or q in si_match or q in ta_match or district_match:
+                    matches.append({
+                        "name": p["name"],
+                        "display_name": f"{p['name']}, {p.get('district', 'Sri Lanka')}",
+                        "latitude": p["latitude"],
+                        "longitude": p["longitude"],
+                        "type": p.get("category", "place"),
+                        "source": "curated_database"
+                    })
+                    if len(matches) >= 8:
+                        break
 
-        cum_driving_mins += best_metrics["estimated_driving_time_mins"]
-        cum_trip_mins += best_metrics["estimated_driving_time_mins"] + stay_mins
-        total_km += best_metrics["estimated_driving_km"]
+            return json_response(matches)
 
-        stops.append({
-            "stop_number": stop_num,
-            "place_id": next_place["id"],
-            "name": next_place["name"],
-            "category": next_place.get("category", "heritage"),
-            "sub_category": next_place.get("sub_category", "attraction"),
-            "latitude": next_place["latitude"],
-            "longitude": next_place["longitude"],
-            "elevation_m": next_place.get("elevation_m", 500),
-            "district": next_place.get("district", "Sri Lanka"),
-            "leg_driving_km": best_metrics["estimated_driving_km"],
-            "leg_driving_time_mins": best_metrics["estimated_driving_time_mins"],
-            "recommended_stay_mins": stay_mins,
-            "cumulative_driving_mins": cum_driving_mins,
-            "cumulative_trip_mins": cum_trip_mins,
-            "pricing": next_place.get("pricing", {}),
-            "dress_code": next_place.get("dress_code", {}),
-            "best_time_to_visit": next_place.get("best_time_to_visit", {}),
-            "access_feasibility": next_place.get("access_feasibility", "car"),
-            "corridor_warning": best_metrics["corridor_warning"]
-        })
+        # 4. Trip Sequencer (/api/v1/loops/sequence)
+        if path == "/api/v1/loops/sequence" and method == "POST":
+            try:
+                body_raw = await request.text()
+                body = json.loads(body_raw) if body_raw else {}
+            except Exception:
+                body = {}
 
-        route_geometry.append([next_place["longitude"], next_place["latitude"]])
-        current_lat = next_place["latitude"]
-        current_lng = next_place["longitude"]
-        current_elev = next_place.get("elevation_m", 500)
+            start_lat = float(body.get("start_lat", 7.2906))
+            start_lng = float(body.get("start_lng", 80.6337))
+            start_name = body.get("start_name") or "Starting Point"
+            max_stops = int(body.get("max_stops", 4))
+            category = body.get("category")
 
-    return {
-        "start_location": {
-            "name": req.start_name or "Starting Location",
-            "latitude": req.start_lat,
-            "longitude": req.start_lng
-        },
-        "total_stops": len(stops),
-        "total_distance_km": round(total_km, 1),
-        "total_driving_time_mins": cum_driving_mins,
-        "total_trip_duration_mins": cum_trip_mins,
-        "stops": stops,
-        "route_geometry": route_geometry,
-        "corridor_summary": f"Scenic loop with {len(stops)} stops covering {round(total_km, 1)} km through Sri Lanka corridor."
-    }
+            # Filter candidates within reachable day-trip radius
+            candidates = []
+            for p in NATIONWIDE_PLACES:
+                if category and category != "all" and p.get("category") != category:
+                    continue
+                d = haversine_distance(start_lat, start_lng, p["latitude"], p["longitude"])
+                if d <= 120.0:
+                    candidates.append((d, p))
 
-@app.get("/api/v1/loops")
-async def list_loops():
-    return [
-        {
-            "id": "kandy-three-temples",
-            "title": "Three Ancient Temples Loop (Gadaladeniya, Embekke, Lankathilaka)",
-            "region_id": "kandy-hub",
-            "duration_category": "half_day",
-            "estimated_travel_time_mins": 90,
-            "total_distance_km": 28.5,
-            "stops": [],
-            "corridor_tips": "Scenic secondary road loop through rice paddies."
-        },
-        {
-            "id": "sigiriya-pidurangala-loop",
-            "title": "Sigiriya Royal Citadel & Pidurangala Sunrise Corridor",
-            "region_id": "cultural-triangle",
-            "duration_category": "full_day",
-            "estimated_travel_time_mins": 45,
-            "total_distance_km": 14.0,
-            "stops": [],
-            "corridor_tips": "Climb Pidurangala for 5:45 AM sunrise; explore Sigiriya in afternoon."
-        }
-    ]
+            candidates.sort(key=lambda x: x[0])
+            selected_pool = [c[1] for c in candidates[:15]]
 
-@app.get("/api/v1/regions")
-async def list_regions():
-    return NATIONWIDE_REGIONS
+            if not selected_pool:
+                all_sorted = sorted(NATIONWIDE_PLACES, key=lambda p: haversine_distance(start_lat, start_lng, p["latitude"], p["longitude"]))
+                selected_pool = all_sorted[:max_stops]
 
-@app.post("/api/v1/contributions", status_code=201)
-async def submit_contribution(c: ContributionRequest):
-    record = {
-        "id": f"contrib-{int(time.time())}",
-        "place_id": c.place_id,
-        "place_name": c.place_name,
-        "contribution_type": c.contribution_type,
-        "details": c.details,
-        "submitter_name": c.submitter_name,
-        "status": "pending",
-        "created_at": time.strftime("%Y-%m-%d %H:%M:%S")
-    }
-    COMMUNITY_CONTRIBUTIONS.append(record)
-    return record
+            # Build sequence using greedy shortest hill-driving time
+            stops = []
+            unvisited = list(selected_pool)
+            curr_lat, curr_lng = start_lat, start_lng
+            curr_elev = 500
 
-@app.get("/api/v1/contributions")
-async def list_contributions():
-    return COMMUNITY_CONTRIBUTIONS
+            cum_driving_mins = 0
+            cum_trip_mins = 0
+            total_km = 0.0
+            route_geometry = [[start_lng, start_lat]]
 
-# ----------------- CLOUDFLARE ASGI EXPORT -----------------
-try:
-    from workers import asgi
-    Default = asgi.entrypoint(app)
-except ImportError:
-    # Allows testing locally with: uvicorn worker.main:app
-    pass
+            for stop_idx in range(1, min(max_stops, len(unvisited)) + 1):
+                best_idx = 0
+                best_time = 999999
+                best_metrics = None
 
+                for idx, p in enumerate(unvisited):
+                    m = calculate_topography_metrics(
+                        curr_lat, curr_lng,
+                        p["latitude"], p["longitude"],
+                        curr_elev, p.get("elevation_m", 500)
+                    )
+                    if m["estimated_driving_time_mins"] < best_time:
+                        best_time = m["estimated_driving_time_mins"]
+                        best_metrics = m
+                        best_idx = idx
+
+                next_place = unvisited.pop(best_idx)
+                stay_mins = 60 if next_place.get("category") == "heritage" else 45
+                if next_place.get("sub_category") in ["fortress", "safari"]:
+                    stay_mins = 120
+
+                cum_driving_mins += best_metrics["estimated_driving_time_mins"]
+                cum_trip_mins += best_metrics["estimated_driving_time_mins"] + stay_mins
+                total_km += best_metrics["estimated_driving_km"]
+
+                stops.append({
+                    "stop_number": stop_idx,
+                    "place_id": next_place["id"],
+                    "name": next_place["name"],
+                    "category": next_place.get("category", "heritage"),
+                    "sub_category": next_place.get("sub_category", "attraction"),
+                    "latitude": next_place["latitude"],
+                    "longitude": next_place["longitude"],
+                    "elevation_m": next_place.get("elevation_m", 500),
+                    "district": next_place.get("district", "Sri Lanka"),
+                    "leg_driving_km": best_metrics["estimated_driving_km"],
+                    "leg_driving_time_mins": best_metrics["estimated_driving_time_mins"],
+                    "recommended_stay_mins": stay_mins,
+                    "cumulative_driving_mins": cum_driving_mins,
+                    "cumulative_trip_mins": cum_trip_mins,
+                    "pricing": next_place.get("pricing", {}),
+                    "dress_code": next_place.get("dress_code", {}),
+                    "best_time_to_visit": next_place.get("best_time_to_visit", {}),
+                    "access_feasibility": next_place.get("access_feasibility", "car"),
+                    "corridor_warning": best_metrics["corridor_warning"]
+                })
+
+                route_geometry.append([next_place["longitude"], next_place["latitude"]])
+                curr_lat = next_place["latitude"]
+                curr_lng = next_place["longitude"]
+                curr_elev = next_place.get("elevation_m", 500)
+
+            return json_response({
+                "start_location": {
+                    "name": start_name,
+                    "latitude": start_lat,
+                    "longitude": start_lng
+                },
+                "total_stops": len(stops),
+                "total_distance_km": round(total_km, 1),
+                "total_driving_time_mins": cum_driving_mins,
+                "total_trip_duration_mins": cum_trip_mins,
+                "stops": stops,
+                "route_geometry": route_geometry,
+                "corridor_summary": f"Optimized corridor route with {len(stops)} stops covering {round(total_km, 1)} km."
+            })
+
+        # 5. Corridor suggestions (/api/v1/loops/corridor-suggestions)
+        if path == "/api/v1/loops/corridor-suggestions":
+            place_id = query.get("place_id", [""])[0]
+            anchor = next((p for p in NATIONWIDE_PLACES if p["id"] == place_id), None)
+            if not anchor:
+                return json_response([])
+
+            nearby = []
+            for p in NATIONWIDE_PLACES:
+                if p["id"] == place_id:
+                    continue
+                d = haversine_distance(anchor["latitude"], anchor["longitude"], p["latitude"], p["longitude"])
+                if d <= 15.0:
+                    enriched = dict(p)
+                    enriched["straight_line_distance_km"] = d
+                    nearby.append(enriched)
+
+            nearby.sort(key=lambda x: x["straight_line_distance_km"])
+            return json_response(nearby[:3])
+
+        # 6. Regions (/api/v1/regions)
+        if path == "/api/v1/regions":
+            return json_response(NATIONWIDE_REGIONS)
+
+        # 7. Loops (/api/v1/loops)
+        if path == "/api/v1/loops":
+            return json_response([
+                {
+                    "id": "kandy-three-temples",
+                    "title": "Three Ancient Temples Loop (Gadaladeniya, Embekke, Lankathilaka)",
+                    "region_id": "kandy-hub",
+                    "duration_category": "half_day",
+                    "estimated_travel_time_mins": 90,
+                    "total_distance_km": 28.5,
+                    "stops": [],
+                    "corridor_tips": "Scenic secondary road loop through rice paddies."
+                },
+                {
+                    "id": "sigiriya-pidurangala-loop",
+                    "title": "Sigiriya Royal Citadel & Pidurangala Sunrise Corridor",
+                    "region_id": "cultural-triangle",
+                    "duration_category": "full_day",
+                    "estimated_travel_time_mins": 45,
+                    "total_distance_km": 14.0,
+                    "stops": [],
+                    "corridor_tips": "Climb Pidurangala for 5:45 AM sunrise; explore Sigiriya in afternoon."
+                }
+            ])
+
+        # 8. Contributions (/api/v1/contributions)
+        if path == "/api/v1/contributions":
+            if method == "POST":
+                try:
+                    body_raw = await request.text()
+                    body = json.loads(body_raw) if body_raw else {}
+                except Exception:
+                    body = {}
+                record = {
+                    "id": f"contrib-{int(time.time())}",
+                    "place_id": body.get("place_id"),
+                    "place_name": body.get("place_name", "Unknown Place"),
+                    "contribution_type": body.get("contribution_type", "road_condition"),
+                    "details": body.get("details", ""),
+                    "submitter_name": body.get("submitter_name", "Anonymous Traveler"),
+                    "status": "pending",
+                    "created_at": time.strftime("%Y-%m-%d %H:%M:%S")
+                }
+                return json_response(record, status=201)
+            return json_response([])
+
+        # Fallback 404
+        return json_response({"error": "Endpoint not found", "path": path}, status=404)

@@ -1,17 +1,6 @@
 [project]
 name = "ceylonwander-api"
 version = "1.0.0"
-description = "FastAPI backend for CeylonWander running on Cloudflare Workers"
+description = "Native Python Worker for CeylonWander running on Cloudflare edge"
 requires-python = ">=3.11"
-dependencies = [
-    "fastapi",
-    "pydantic",
-    "httpx",
-]
-
-[dependency-groups]
-dev = [
-    "workers-py",
-    "workers-runtime-sdk",
-]
-
+dependencies = []
