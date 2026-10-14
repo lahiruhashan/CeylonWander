@@ -1,335 +1,503 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import dynamic from 'next/dynamic';
-import { Place, VisitSequenceResult } from '@/types';
-import { fetchNearbyPlaces } from '@/services/api';
-import { REGION_BY_ID } from '@/data/regions_data';
-import { HOT_TOPICS } from '@/data/hot_topics_data';
-import FilterBar from '@/components/filters/FilterBar';
-import PlaceCard from '@/components/place/PlaceCard';
-import PlaceDetailModal from '@/components/place/PlaceDetailModal';
-import AddPlaceModal from '@/components/place/AddPlaceModal';
-import SmartLoopsModal from '@/components/loops/SmartLoopsModal';
-import OfflinePacksModal from '@/components/offline/OfflinePacksModal';
-import CommunityReportModal from '@/components/community/CommunityReportModal';
-import TripSequencerPanel from '@/components/itinerary/TripSequencerPanel';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { Compass, CheckCircle2, ArrowRight } from 'lucide-react';
 import TukTukFareModal from '@/components/calculator/TukTukFareModal';
-import { Compass, Plus } from 'lucide-react';
 
-// Dynamic import for MapLibre GL to disable SSR
-const CeylonMap = dynamic(() => import('@/components/map/CeylonMap'), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full min-h-[400px] bg-emerald-950/20 rounded-2xl flex items-center justify-center text-xs text-gray-500 font-medium animate-pulse">
-      🗺️ Initializing Sri Lanka Vector Map...
-    </div>
-  ),
-});
-
-export default function HomePage() {
-  const [selectedRegionId, setSelectedRegionId] = useState('all-sri-lanka');
-  const [selectedHotTopicId, setSelectedHotTopicId] = useState<string | null>(null);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([80.7718, 7.8731]);
-  const [radiusKm, setRadiusKm] = useState(250);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [maxTravelTime, setMaxTravelTime] = useState<number | null>(null);
-
-  const [places, setPlaces] = useState<Place[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  const [reportPlace, setReportPlace] = useState<Place | null>(null);
-
-  const [showAddPlaceModal, setShowAddPlaceModal] = useState(false);
-  const [showLoopsModal, setShowLoopsModal] = useState(false);
-  const [showOfflineModal, setShowOfflineModal] = useState(false);
+export default function LandingPage() {
   const [showTukTukModal, setShowTukTukModal] = useState(false);
-  const [syncNotice, setSyncNotice] = useState<string | null>(null);
 
-  // Sequencer State
-  const [showSequencer, setShowSequencer] = useState(false);
-  const [sequenceStartCoords, setSequenceStartCoords] = useState<[number, number]>([80.7718, 7.8731]);
-  const [sequenceStartName, setSequenceStartName] = useState<string>('All Sri Lanka');
-  const [activeSequenceResult, setActiveSequenceResult] = useState<VisitSequenceResult | null>(null);
+  // Quick interactive fare preview state on landing page
+  const [previewKm, setPreviewKm] = useState(6);
+  const [previewTerrain, setPreviewTerrain] = useState<'flat' | 'hill'>('hill');
 
-  const loadPlaces = async () => {
-    setLoading(true);
-    try {
-      const data = await fetchNearbyPlaces({
-        lng: mapCenter[0],
-        lat: mapCenter[1],
-        radius_km: radiusKm,
-        category: selectedCategory,
-        max_travel_time_mins: maxTravelTime || undefined,
-      });
-      setPlaces(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+  const calcPreviewFare = () => {
+    const base = 120;
+    const perKm = 95;
+    let total = base + (previewKm > 1 ? (previewKm - 1) * perKm : 0);
+    if (previewTerrain === 'hill') total *= 1.3;
+    const minLkr = Math.round(total * 0.95 / 50) * 50;
+    const maxLkr = Math.round(total * 1.15 / 50) * 50;
+    const usdMin = (minLkr / 305).toFixed(2);
+    const usdMax = (maxLkr / 305).toFixed(2);
+    return { minLkr, maxLkr, usdMin, usdMax };
   };
 
-  useEffect(() => {
-    loadPlaces();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapCenter, radiusKm, selectedCategory, maxTravelTime]);
-
-  const handleSelectRegion = (regId: string) => {
-    setSelectedRegionId(regId);
-    setSelectedHotTopicId(null);
-    const reg = REGION_BY_ID[regId];
-    if (reg) {
-      setMapCenter(reg.coords);
-      setSequenceStartCoords(reg.coords);
-      setSequenceStartName(reg.name);
-      setRadiusKm(reg.radiusKm);
-    }
-  };
-
-  const handleSelectHotTopic = (topicId: string | null) => {
-    setSelectedHotTopicId(topicId);
-    if (topicId) {
-      const topic = HOT_TOPICS.find((t) => t.id === topicId);
-      if (topic) {
-        setMapCenter(topic.center);
-        setRadiusKm(topic.radiusKm);
-        setSequenceStartCoords(topic.center);
-        setSequenceStartName(topic.label);
-      }
-    } else {
-      const reg = REGION_BY_ID[selectedRegionId];
-      if (reg) {
-        setMapCenter(reg.coords);
-        setRadiusKm(reg.radiusKm);
-      }
-    }
-  };
-
-  // Filter places matching active hot topic
-  const displayedPlaces = useMemo(() => {
-    if (!selectedHotTopicId) return places;
-    const topic = HOT_TOPICS.find((t) => t.id === selectedHotTopicId);
-    if (!topic) return places;
-    return places.filter(topic.matches);
-  }, [places, selectedHotTopicId]);
-
-  const currentTopic = HOT_TOPICS.find((t) => t.id === selectedHotTopicId);
-  const currentRegion = REGION_BY_ID[selectedRegionId];
-
-  const handlePlaceAdded = (newPlace: Place) => {
-    setPlaces((prev) => [newPlace, ...prev.filter((p) => p.id !== newPlace.id)]);
-    setMapCenter([newPlace.longitude, newPlace.latitude]);
-    setSelectedPlace(newPlace);
-    setSyncNotice(`Added "${newPlace.name}" to database!`);
-    setTimeout(() => setSyncNotice(null), 3000);
-  };
-
-  const handleStartSequenceFromPlace = (place: Place) => {
-    setSequenceStartCoords([place.longitude, place.latitude]);
-    setSequenceStartName(place.name);
-    setShowSequencer(true);
-  };
-
-  const handleOpenSequencerFromBar = () => {
-    setSequenceStartCoords(mapCenter);
-    const label = currentTopic?.label || currentRegion?.shortName || 'Selected Map Location';
-    setSequenceStartName(label);
-    setShowSequencer(true);
-  };
-
-  const handleMapClick = (coords: [number, number]) => {
-    if (showSequencer) {
-      setSequenceStartCoords(coords);
-      setSequenceStartName(`Map Point (${coords[1].toFixed(3)}, ${coords[0].toFixed(3)})`);
-    }
-  };
-
-  const handleSelectPlaceById = (placeId: string) => {
-    const found = places.find((p) => p.id === placeId);
-    if (found) setSelectedPlace(found);
-  };
+  const previewFare = calcPreviewFare();
 
   return (
-    <div className="flex flex-col h-screen w-full bg-[#f4f8f4] overflow-hidden font-sans">
-      {/* Top sticky navigation and filter bar */}
-      <FilterBar
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        radiusKm={radiusKm}
-        onChangeRadius={setRadiusKm}
-        maxTravelTime={maxTravelTime}
-        onChangeMaxTravelTime={setMaxTravelTime}
-        selectedRegionId={selectedRegionId}
-        onSelectRegion={handleSelectRegion}
-        selectedHotTopicId={selectedHotTopicId}
-        onSelectHotTopic={handleSelectHotTopic}
-        onOpenOfflinePacks={() => setShowOfflineModal(true)}
-        onOpenLoops={() => setShowLoopsModal(true)}
-        onOpenAddPlace={() => setShowAddPlaceModal(true)}
-        onOpenSequencer={handleOpenSequencerFromBar}
-        onOpenTukTukFare={() => setShowTukTukModal(true)}
-        placesCount={displayedPlaces.length}
-      />
+    <div className="min-h-screen bg-[#f7faf7] text-gray-900 font-sans selection:bg-emerald-100 selection:text-emerald-900">
+      {/* 1. Sticky Navigation Bar */}
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-emerald-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-800 to-teal-600 flex items-center justify-center text-white font-black shadow-md text-sm">
+              CW
+            </div>
+            <div>
+              <span className="text-base font-extrabold text-emerald-950 tracking-tight block leading-none">
+                CeylonWander <span className="text-xs">🇱🇰</span>
+              </span>
+              <span className="text-[10px] text-emerald-700 font-bold tracking-wide uppercase">
+                Sri Lanka Travel Engine
+              </span>
+            </div>
+          </Link>
 
-      {/* Sync feedback toast banner */}
-      {syncNotice && (
-        <div className="bg-emerald-800 text-white text-xs font-semibold px-4 py-2 flex items-center justify-between shadow-md transition-all">
-          <span>{syncNotice}</span>
-          <button onClick={() => setSyncNotice(null)} className="text-emerald-200 hover:text-white">✕</button>
+          <nav className="hidden md:flex items-center gap-7 text-xs font-bold text-gray-600">
+            <a href="#why-us" className="hover:text-emerald-800 transition-colors">Why CeylonWander</a>
+            <a href="#tuktuk-tool" className="hover:text-emerald-800 transition-colors">Tuk-Tuk Fare Tool</a>
+            <a href="#corridors" className="hover:text-emerald-800 transition-colors">Top Corridors</a>
+            <a href="#etiquette" className="hover:text-emerald-800 transition-colors">Temple Rules</a>
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowTukTukModal(true)}
+              className="px-3 py-1.5 text-xs font-bold bg-amber-400 hover:bg-amber-500 text-amber-950 rounded-xl shadow-xs transition-colors flex items-center gap-1"
+            >
+              <span>🛺</span>
+              <span className="hidden sm:inline">Fair</span>
+              <span>Fare</span>
+            </button>
+
+            <Link
+              href="/explore"
+              className="px-4 py-2 text-xs font-bold bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl shadow-md transition-all flex items-center gap-1.5 group"
+            >
+              <span>Launch Map</span>
+              <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+          </div>
         </div>
-      )}
+      </header>
 
-      {/* Main content grid: sidebar list & interactive vector map */}
-      <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
-        {/* Left Side: Places List */}
-        <div className="w-full md:w-[420px] lg:w-[460px] h-[45vh] md:h-full flex flex-col border-r border-emerald-200 bg-[#f9fcf9] z-10 shrink-0">
-          {/* Header count & status */}
-          <div className="px-4 py-2.5 bg-emerald-50/90 border-b border-emerald-200/90 flex items-center justify-between text-xs">
-            <span className="font-semibold text-emerald-950 truncate pr-2">
-              {currentTopic ? (
-                <>
-                  🔥 <span className="text-amber-800 font-bold">{currentTopic.label}:</span>{' '}
-                  <strong className="text-emerald-800">{displayedPlaces.length}</strong> highlights
-                </>
-              ) : (
-                <>
-                  Found <strong className="text-emerald-800">{displayedPlaces.length}</strong> places in{' '}
-                  <span className="font-bold text-gray-800">{currentRegion?.shortName || 'Sri Lanka'}</span>
-                </>
-              )}
+      {/* 2. Hero Section */}
+      <section className="relative overflow-hidden pt-12 pb-20 sm:pt-20 sm:pb-28">
+        {/* Background glow effects */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-emerald-100/60 to-transparent -z-10 blur-3xl pointer-events-none" />
+
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-extrabold uppercase tracking-wider mb-6 shadow-xs animate-in fade-in duration-500">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            <span>Live on Cloudflare Colombo Edge • 110+ Curated Spots</span>
+          </div>
+
+          {/* Headline */}
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-emerald-950 tracking-tight leading-[1.15] mb-6">
+            Travel Sri Lanka without the{' '}
+            <span className="bg-gradient-to-r from-emerald-700 via-teal-600 to-amber-600 bg-clip-text text-transparent">
+              mountain delays, scams, or guesswork.
             </span>
-            <div className="flex items-center gap-2 shrink-0">
-              {selectedHotTopicId && (
-                <button
-                  onClick={() => setSelectedHotTopicId(null)}
-                  className="text-[11px] text-amber-700 hover:text-amber-900 font-bold underline"
-                >
-                  Clear topic
-                </button>
-              )}
-              <button
-                onClick={() => setShowAddPlaceModal(true)}
-                className="text-[11px] text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1"
-              >
-                <Plus size={12} />
-                <span>Add Custom</span>
-              </button>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
+            The first discovery engine engineered for Sri Lanka’s real topography: 
+            true hill-country switchback drive times, transparent 3-tier dual ticket prices (Foreign vs. Local), 
+            sacred dress etiquette, and offline town bundles.
+          </p>
+
+          {/* Action CTAs */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12">
+            <Link
+              href="/explore"
+              className="w-full sm:w-auto px-7 py-3.5 bg-emerald-800 hover:bg-emerald-900 text-white rounded-2xl text-sm font-black shadow-xl shadow-emerald-900/20 transition-all flex items-center justify-center gap-2 group hover:scale-[1.02]"
+            >
+              <Compass size={18} className="group-hover:rotate-45 transition-transform" />
+              <span>Launch Interactive Map (100% Free)</span>
+              <ArrowRight size={15} />
+            </Link>
+
+            <button
+              onClick={() => setShowTukTukModal(true)}
+              className="w-full sm:w-auto px-6 py-3.5 bg-white hover:bg-gray-50 text-gray-800 rounded-2xl text-sm font-bold border border-gray-200 shadow-sm transition-all flex items-center justify-center gap-2"
+            >
+              <span>🛺</span>
+              <span>Open Tuk-Tuk Fare Meter</span>
+            </button>
+          </div>
+
+          {/* Key Value Stat Chips */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-left max-w-4xl mx-auto">
+            <div className="bg-white p-3.5 rounded-2xl border border-emerald-100 shadow-xs">
+              <span className="text-xl mb-1 block">⛰️</span>
+              <h4 className="text-xs font-bold text-gray-900">Switchback Topography</h4>
+              <p className="text-[11px] text-gray-500 mt-0.5">True driving times instead of misleading straight-lines.</p>
+            </div>
+
+            <div className="bg-white p-3.5 rounded-2xl border border-emerald-100 shadow-xs">
+              <span className="text-xl mb-1 block">💸</span>
+              <h4 className="text-xs font-bold text-gray-900">3-Tier Dual Pricing</h4>
+              <p className="text-[11px] text-gray-500 mt-0.5">Explicit Foreign USD vs SAARC vs Local LKR rates.</p>
+            </div>
+
+            <div className="bg-white p-3.5 rounded-2xl border border-emerald-100 shadow-xs">
+              <span className="text-xl mb-1 block">🛕</span>
+              <h4 className="text-xs font-bold text-gray-900">Temple Etiquette</h4>
+              <p className="text-[11px] text-gray-500 mt-0.5">Shoulder/knee rules, shoe counters & hot stone warnings.</p>
+            </div>
+
+            <div className="bg-white p-3.5 rounded-2xl border border-emerald-100 shadow-xs">
+              <span className="text-xl mb-1 block">📶</span>
+              <h4 className="text-xs font-bold text-gray-900">Offline Mountain Packs</h4>
+              <p className="text-[11px] text-gray-500 mt-0.5">Lightweight &lt;25MB town packs for signal dead zones.</p>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Cards container */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-3">
-            {loading ? (
-              <div className="text-center py-16 text-gray-400 text-xs animate-pulse">
-                Calculating topography-adjusted travel times...
+      {/* 3. Interactive Tuk-Tuk Fare Tool Preview */}
+      <section id="tuktuk-tool" className="py-16 bg-gradient-to-b from-white to-[#f4f9f4] border-y border-emerald-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="grid md:grid-cols-12 gap-8 items-center">
+            {/* Explainer */}
+            <div className="md:col-span-5 space-y-4">
+              <div className="inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-amber-700 bg-amber-100/80 px-2.5 py-1 rounded-lg">
+                <span>🛺 Traveler Essential</span>
               </div>
-            ) : displayedPlaces.length === 0 ? (
-              <div className="text-center py-16 px-4 text-gray-500 text-xs space-y-3">
-                <Compass className="w-8 h-8 text-gray-400 mx-auto" />
-                <p className="font-medium">
-                  {selectedHotTopicId
-                    ? `No places found matching "${currentTopic?.label}" in this area.`
-                    : `No places found within ${radiusKm} km of this point.`}
-                </p>
-                <div className="flex flex-col gap-2 items-center">
-                  {selectedHotTopicId && (
-                    <button
-                      onClick={() => setSelectedHotTopicId(null)}
-                      className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold shadow-xs text-xs"
-                    >
-                      Show All Highlights
-                    </button>
-                  )}
-                  <button
-                    onClick={() => setRadiusKm(250)}
-                    className="text-emerald-700 underline text-[11px]"
-                  >
-                    Expand to Nationwide View (250 km)
-                  </button>
+              <h2 className="text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight leading-snug">
+                Never pay 3x tourist markups on Tuk-Tuks.
+              </h2>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Outside Colombo, three-wheelers rarely use meters. Our tool calculates regulated local fuel-standard rates 
+                accounting for hill switchbacks so you know the honest price before you negotiate.
+              </p>
+              
+              <div className="pt-2">
+                <button
+                  onClick={() => setShowTukTukModal(true)}
+                  className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-amber-950 rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-1.5"
+                >
+                  <span>Open Full Fare Calculator</span>
+                  <ArrowRight size={13} />
+                </button>
+              </div>
+            </div>
+
+            {/* Live Interactive Preview Card */}
+            <div className="md:col-span-7 bg-white p-6 rounded-3xl shadow-xl border border-emerald-200 space-y-5">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">
+                  Quick Fare Simulator
+                </span>
+                <span className="text-[11px] text-gray-500 font-medium">Standard Tuk-Tuk</span>
+              </div>
+
+              {/* Slider */}
+              <div>
+                <div className="flex justify-between text-xs font-bold mb-1.5">
+                  <span className="text-gray-700">Trip Distance:</span>
+                  <span className="text-emerald-800 font-black">{previewKm} kilometers</span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="30"
+                  value={previewKm}
+                  onChange={(e) => setPreviewKm(Number(e.target.value))}
+                  className="w-full accent-emerald-700 h-2 bg-gray-100 rounded-lg cursor-pointer"
+                />
+              </div>
+
+              {/* Terrain toggle */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setPreviewTerrain('flat')}
+                  className={`flex-1 py-1.5 px-3 rounded-xl text-xs font-bold transition-all border ${
+                    previewTerrain === 'flat'
+                      ? 'bg-emerald-700 text-white border-emerald-700 shadow-xs'
+                      : 'bg-gray-50 text-gray-700 border-gray-200'
+                  }`}
+                >
+                  🏙️ Flat Coast (Galle, Colombo)
+                </button>
+                <button
+                  onClick={() => setPreviewTerrain('hill')}
+                  className={`flex-1 py-1.5 px-3 rounded-xl text-xs font-bold transition-all border ${
+                    previewTerrain === 'hill'
+                      ? 'bg-emerald-700 text-white border-emerald-700 shadow-xs'
+                      : 'bg-gray-50 text-gray-700 border-gray-200'
+                  }`}
+                >
+                  ⛰️ Hill Country (Ella, Kandy)
+                </button>
+              </div>
+
+              {/* Result display */}
+              <div className="bg-gradient-to-r from-emerald-900 to-teal-950 text-white p-4 rounded-2xl flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] text-emerald-300 uppercase font-bold tracking-wider block">
+                    Estimated Honest Meter Fare
+                  </span>
+                  <div className="text-2xl font-black text-amber-400 mt-0.5">
+                    LKR {previewFare.minLkr.toLocaleString()} – {previewFare.maxLkr.toLocaleString()}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs font-bold text-emerald-200 block">
+                    ~${previewFare.usdMin} – ${previewFare.usdMax} USD
+                  </span>
+                  <span className="text-[10px] text-emerald-400">Regulated benchmark</span>
                 </div>
               </div>
-            ) : (
-              displayedPlaces.map((place) => (
-                <PlaceCard
-                  key={place.id}
-                  place={place}
-                  isSelected={selectedPlace?.id === place.id}
-                  onSelect={(p) => setSelectedPlace(p)}
-                  onStartSequence={handleStartSequenceFromPlace}
-                />
-              ))
-            )}
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Right Side: Map Canvas */}
-        <div className="flex-1 h-[55vh] md:h-full relative p-2 md:p-3 bg-[#eaf4ea]">
-          <CeylonMap
-            center={mapCenter}
-            radiusKm={radiusKm}
-            places={displayedPlaces}
-            selectedPlace={selectedPlace}
-            onSelectPlace={(p) => setSelectedPlace(p)}
-            sequenceResult={activeSequenceResult}
-            onMapClick={handleMapClick}
-          />
+      {/* 4. Why CeylonWander vs. Google Maps Comparison */}
+      <section id="why-us" className="py-20 max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <h2 className="text-xs font-extrabold text-emerald-700 uppercase tracking-widest mb-2">
+            The Difference
+          </h2>
+          <h3 className="text-3xl font-black text-emerald-950 tracking-tight">
+            Why Generic Maps Fail in Sri Lanka
+          </h3>
+          <p className="text-xs text-gray-600 mt-2">
+            Google Maps treats steep tea plantations and winding mountain switchbacks like flat city streets. CeylonWander was built on the ground.
+          </p>
         </div>
-      </div>
 
-      {/* Sequencer Side Panel */}
-      <TripSequencerPanel
-        isOpen={showSequencer}
-        onClose={() => setShowSequencer(false)}
-        startCoords={sequenceStartCoords}
-        startName={sequenceStartName}
-        onSelectPlaceById={handleSelectPlaceById}
-        onSequenceUpdated={setActiveSequenceResult}
-        onChangeStartPoint={(coords, name) => {
-          setSequenceStartCoords(coords);
-          setSequenceStartName(name);
-        }}
-      />
+        <div className="bg-white rounded-3xl shadow-xl border border-emerald-200 overflow-hidden">
+          <div className="grid grid-cols-12 bg-emerald-950 text-white p-4 text-xs font-bold tracking-wider uppercase">
+            <div className="col-span-5 sm:col-span-4">Feature / Reality</div>
+            <div className="col-span-3 sm:col-span-4 text-gray-400">Generic Travel Apps</div>
+            <div className="col-span-4 text-emerald-300 font-black">CeylonWander 🇱🇰</div>
+          </div>
 
-      {/* Modals */}
-      {selectedPlace && (
-        <PlaceDetailModal
-          place={selectedPlace}
-          onClose={() => setSelectedPlace(null)}
-          onSelectPlace={(p) => setSelectedPlace(p)}
-          onOpenReport={(p) => setReportPlace(p)}
-          onStartSequence={handleStartSequenceFromPlace}
-        />
-      )}
+          <div className="divide-y divide-gray-100 text-xs">
+            {[
+              {
+                feature: 'Mountain Travel Times',
+                generic: 'Misleading "crow flight" straight lines; misses slow hairpins',
+                us: 'Topography routing accounting for 25km/h switchbacks',
+              },
+              {
+                feature: 'Entry Fee Transparency',
+                generic: 'Single flat rate or outdated TripAdvisor review comments',
+                us: 'Clear 3-tier rates: Foreigner USD vs. SAARC vs. Local LKR',
+              },
+              {
+                feature: 'Sacred Site Etiquette',
+                generic: 'Hidden in reviews or completely unmentioned',
+                us: 'Standardized badges: shoulder/knee, shoe counter, hot stone',
+              },
+              {
+                feature: 'Mountain Signal Dead Zones',
+                generic: 'Requires constant cellular data roaming',
+                us: 'One-tap <25MB regional town bundles for offline GPS',
+              },
+              {
+                feature: 'Route Backtracking',
+                generic: 'Sends you zigzagging across mountain valleys',
+                us: 'Smart Corridor loops & multi-stop Trip Sequencer',
+              },
+              {
+                feature: 'Turn-by-Turn Export',
+                generic: 'Restricted to their proprietary app sandbox',
+                us: '1-click export to Google Maps driving navigation',
+              },
+            ].map((row, idx) => (
+              <div key={idx} className="grid grid-cols-12 p-4 items-center hover:bg-emerald-50/40 transition-colors">
+                <div className="col-span-5 sm:col-span-4 font-bold text-gray-900">{row.feature}</div>
+                <div className="col-span-3 sm:col-span-4 text-gray-500 flex items-center gap-1.5 pr-2">
+                  <span className="text-red-500 font-bold shrink-0">✕</span>
+                  <span className="text-[11px] leading-tight">{row.generic}</span>
+                </div>
+                <div className="col-span-4 text-emerald-900 font-bold flex items-center gap-1.5">
+                  <CheckCircle2 size={14} className="text-emerald-600 shrink-0" />
+                  <span className="text-[11px] leading-tight">{row.us}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <AddPlaceModal
-        isOpen={showAddPlaceModal}
-        onClose={() => setShowAddPlaceModal(false)}
-        currentCoords={mapCenter}
-        onPlaceAdded={handlePlaceAdded}
-      />
+      {/* 5. Top Travel Corridors */}
+      <section id="corridors" className="py-16 bg-[#eef6ee]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
+            <div>
+              <h2 className="text-xs font-extrabold text-emerald-800 uppercase tracking-widest mb-1">
+                Curated Travel Corridors
+              </h2>
+              <h3 className="text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight">
+                Explore Iconic Road Loops
+              </h3>
+            </div>
 
-      <SmartLoopsModal
-        isOpen={showLoopsModal}
-        onClose={() => setShowLoopsModal(false)}
-      />
+            <Link
+              href="/explore"
+              className="text-xs font-bold text-emerald-800 hover:text-emerald-950 inline-flex items-center gap-1"
+            >
+              <span>Explore all on map</span>
+              <ArrowRight size={13} />
+            </Link>
+          </div>
 
-      <OfflinePacksModal
-        isOpen={showOfflineModal}
-        onClose={() => setShowOfflineModal(false)}
-      />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              {
+                icon: '🏛️',
+                title: 'Cultural Triangle',
+                sub: 'Sigiriya, Dambulla & Ancient Ruins',
+                desc: 'UNESCO rock citadels, cave monasteries, and colossal brick stupas across 2,000 years of history.',
+                tag: 'UNESCO Heritage',
+              },
+              {
+                icon: '🫖',
+                title: 'Tea Valleys & Falls',
+                sub: 'Nuwara Eliya, Ella & Horton Plains',
+                desc: 'Colonial tea factories, misty cloud forests, nine-arch railway bridges, and panoramic gap treks.',
+                tag: 'Scenic Mountain',
+              },
+              {
+                icon: '🏄',
+                title: 'South Surf & Fort',
+                sub: 'Galle Fort, Weligama & Mirissa',
+                desc: '17th-century Dutch ramparts, beginner surf bays, palm-fringed coves, and ethical whale safaris.',
+                tag: 'Coastal & Marine',
+              },
+              {
+                icon: '🏝️',
+                title: 'Jaffna & The North',
+                sub: 'Casuarina Beach & Sacred Kovils',
+                desc: 'Vibrant Tamil culture, shallow turquoise lagoons, sacred mineral springs, and remote islands.',
+                tag: 'Culture & Coast',
+              },
+            ].map((card, idx) => (
+              <div 
+                key={idx}
+                className="bg-white p-5 rounded-3xl border border-emerald-100 hover:border-emerald-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-4 group"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-3xl">{card.icon}</span>
+                    <span className="text-[10px] font-extrabold uppercase bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-200">
+                      {card.tag}
+                    </span>
+                  </div>
+                  <h4 className="text-base font-bold text-gray-900 group-hover:text-emerald-800 transition-colors">
+                    {card.title}
+                  </h4>
+                  <span className="text-[11px] text-emerald-700 font-semibold block mb-2">{card.sub}</span>
+                  <p className="text-xs text-gray-600 leading-relaxed">{card.desc}</p>
+                </div>
 
+                <Link
+                  href="/explore"
+                  className="pt-2 inline-flex items-center gap-1 text-xs font-bold text-emerald-800 hover:text-emerald-950 group-hover:translate-x-0.5 transition-all"
+                >
+                  <span>Inspect on map</span>
+                  <ArrowRight size={12} />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Sacred Temple Etiquette Cheat Sheet */}
+      <section id="etiquette" className="py-20 max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <h2 className="text-xs font-extrabold text-amber-700 uppercase tracking-widest mb-2">
+            Cultural Respect
+          </h2>
+          <h3 className="text-3xl font-black text-emerald-950 tracking-tight">
+            Sacred Shrines & Temple Etiquette
+          </h3>
+          <p className="text-xs text-gray-600 mt-2">
+            Sri Lanka’s sacred sites are active places of worship with strict veneration rules. Here is what to know before you arrive.
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-3 gap-5">
+          <div className="bg-white p-5 rounded-2xl border border-gray-200 space-y-2">
+            <span className="text-2xl block">👕</span>
+            <h4 className="text-sm font-bold text-gray-900">Shoulders & Knees Covered</h4>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              Both men and women must cover shoulders and knees below joints. White attire is traditionally preferred and deeply respected.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border border-gray-200 space-y-2">
+            <span className="text-2xl block">👟</span>
+            <h4 className="text-sm font-bold text-gray-900">Footwear Removal & Hot Stones</h4>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              Shoes and headwear must be removed at compound gates. In midday sun, granite pavements reach over 50°C—wear thick white socks to avoid burned soles.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border border-gray-200 space-y-2">
+            <span className="text-2xl block">📸</span>
+            <h4 className="text-sm font-bold text-gray-900">No Backs to the Buddha</h4>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              Never pose for photos or selfies with your back turned directly to a Buddha statue. Photograph the monument respectfully from the side.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Bottom Call to Action */}
+      <section className="py-16 bg-gradient-to-r from-emerald-900 to-teal-950 text-white relative overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6 relative z-10">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight">
+            Ready to explore Sri Lanka like a local?
+          </h2>
+          <p className="text-sm text-emerald-100 max-w-xl mx-auto leading-relaxed">
+            Free forever. No account required. Explore 110+ destinations, plan corridor day loops, 
+            and navigate with true mountain travel times.
+          </p>
+
+          <div>
+            <Link
+              href="/explore"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-amber-400 hover:bg-amber-500 text-amber-950 rounded-2xl text-sm font-black shadow-xl transition-all hover:scale-105"
+            >
+              <Compass size={18} />
+              <span>Launch Explorer Map</span>
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Footer */}
+      <footer className="bg-white border-t border-gray-200 py-10 text-xs text-gray-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="font-extrabold text-gray-900">CeylonWander 🇱🇰</span>
+            <span>•</span>
+            <span>Hosted at Cloudflare Colombo Edge</span>
+          </div>
+
+          <div className="flex items-center gap-5">
+            <Link href="/explore" className="hover:text-emerald-800 font-bold">Explorer Map</Link>
+            <button onClick={() => setShowTukTukModal(true)} className="hover:text-emerald-800 font-bold">
+              Tuk-Tuk Calculator
+            </button>
+            <a 
+              href="https://github.com/lahiruhashan/CeylonWander" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="hover:text-emerald-800 font-bold"
+            >
+              GitHub
+            </a>
+          </div>
+        </div>
+      </footer>
+
+      {/* Tuk-Tuk Fare Estimator Modal */}
       <TukTukFareModal
         isOpen={showTukTukModal}
         onClose={() => setShowTukTukModal(false)}
       />
-
-      {reportPlace && (
-        <CommunityReportModal
-          place={reportPlace}
-          onClose={() => setReportPlace(null)}
-        />
-      )}
     </div>
   );
 }

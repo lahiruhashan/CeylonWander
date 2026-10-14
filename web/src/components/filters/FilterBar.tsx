@@ -57,7 +57,7 @@ export default function FilterBar({
       {/* Top Bar Row 1: Brand, Comprehensive Region Dropdown & Actions */}
       <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
         {/* Brand & Stats */}
-        <div className="flex items-center gap-2">
+        <a href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-800 to-teal-600 flex items-center justify-center text-white font-black shadow-md text-xs">
             CW
           </div>
@@ -69,7 +69,7 @@ export default function FilterBar({
               Sri Lanka Database ({placesCount} places)
             </span>
           </div>
-        </div>
+        </a>
 
         {/* Region Dropdown Selector Covering All 9 Provinces */}
         <div className="relative flex items-center flex-1 max-w-[340px] sm:max-w-[380px] min-w-[220px]">
