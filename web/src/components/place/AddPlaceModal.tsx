@@ -148,7 +148,7 @@ export default function AddPlaceModal({
               <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
                 <Check size={28} />
               </div>
-              <h3 className="text-base font-bold text-gray-900">Place Added to CeylonWander Database!</h3>
+              <h3 className="text-base font-bold text-gray-900">Place Added to CeylonCopilot Database!</h3>
               <p className="text-xs text-gray-500">Your place has been stored and is now live on the map and discovery list.</p>
             </div>
           ) : (

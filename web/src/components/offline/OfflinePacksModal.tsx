@@ -20,7 +20,7 @@ export default function OfflinePacksModal({ isOpen, onClose }: OfflinePacksModal
     fetchRegions().then((data) => setRegions(data)).catch(() => setRegions([]));
     
     // Check localStorage for previously saved packs
-    const saved = localStorage.getItem('ceylonwander_offline_packs');
+    const saved = localStorage.getItem('ceyloncopilot_offline_packs') || localStorage.getItem('ceylonwander_offline_packs');
     if (saved) {
       try {
         setDownloadedPacks(JSON.parse(saved));
@@ -39,7 +39,7 @@ export default function OfflinePacksModal({ isOpen, onClose }: OfflinePacksModal
       localStorage.setItem(`offline_pack_${region.id}`, JSON.stringify(pack));
       const updated = { ...downloadedPacks, [region.id]: true };
       setDownloadedPacks(updated);
-      localStorage.setItem('ceylonwander_offline_packs', JSON.stringify(updated));
+      localStorage.setItem('ceyloncopilot_offline_packs', JSON.stringify(updated));
     } catch (err) {
       alert(`Could not download pack: ${err}`);
     } finally {

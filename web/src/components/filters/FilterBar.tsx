@@ -88,11 +88,11 @@ export default function FilterBar({
         {/* Brand & Stats */}
         <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-[#032317] font-black shadow-md text-xs">
-            CW
+            CC
           </div>
           <div>
             <h1 className="text-sm font-extrabold text-white tracking-tight leading-none font-serif">
-              CeylonWander
+              CeylonCopilot
             </h1>
             <span className="text-[10px] text-emerald-400 font-bold">
               Sri Lanka Database ({placesCount} places)

@@ -50,11 +50,11 @@ export default function CulturePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-purple-500 to-indigo-400 flex items-center justify-center text-white font-black text-xs shadow-md">
-              CW
+              CC
             </div>
             <div>
               <span className="text-sm font-extrabold text-white tracking-tight block leading-none">
-                CeylonWander <span className="text-xs">🇱🇰</span>
+                CeylonCopilot <span className="text-xs">🇱🇰</span>
               </span>
               <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider">
                 Culture & Sacred Calendar
@@ -266,7 +266,7 @@ export default function CulturePage() {
       {/* Footer */}
       <footer className="border-t border-white/10 py-10 text-xs text-gray-500 text-center">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span>CeylonWander 🇱🇰 • Cloudflare Colombo Edge</span>
+          <span>CeylonCopilot 🇱🇰 • Cloudflare Colombo Edge</span>
           <div className="flex items-center gap-4 text-gray-400 font-semibold">
             <Link href="/" className="hover:text-white">Home</Link>
             <Link href="/explore" className="hover:text-white">Explorer Map</Link>

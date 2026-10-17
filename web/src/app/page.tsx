@@ -292,14 +292,14 @@ export default function CinematicLandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-[#032317] font-black text-sm shadow-md">
-              CW
+              CC
             </div>
             <div>
               <span className="text-base font-extrabold text-white tracking-tight block leading-none">
-                CeylonWander <span className="text-xs">🇱🇰</span>
+                CeylonCopilot <span className="text-xs">🇱🇰</span>
               </span>
               <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
-                Resplendent Isle
+                Smart Travel Assistant
               </span>
             </div>
           </Link>
@@ -788,7 +788,7 @@ export default function CinematicLandingPage() {
       <footer className="border-t border-white/10 py-12 text-xs text-gray-500 bg-[#030a07]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-white text-sm">CeylonWander 🇱🇰</span>
+            <span className="font-extrabold text-white text-sm">CeylonCopilot 🇱🇰</span>
             <span>•</span>
             <span>Cloudflare Colombo Edge PoP</span>
           </div>

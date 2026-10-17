@@ -20,15 +20,18 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ceylonwander.pages.dev"),
+  metadataBase: new URL("https://ceyloncopilot.pages.dev"),
   title: {
-    default: "CeylonWander 🇱🇰 | The Definitive Sri Lanka Travel & Discovery Engine",
-    template: "%s | CeylonWander Sri Lanka",
+    default: "CeylonCopilot 🇱🇰 | The Intelligent Sri Lanka Travel Assistant & Route Engine",
+    template: "%s | CeylonCopilot Sri Lanka",
   },
   description:
-    "Explore Sri Lanka like a local with true mountain switchback drive times, Kandy to Ella train copilot, seasonal monsoon radar, safari calendars, dual-pricing transparency, and offline packs.",
+    "Explore Sri Lanka like a local with CeylonCopilot: true mountain switchback drive times, Kandy to Ella train copilot, seasonal monsoon radar, safari calendars, dual-pricing transparency, and offline packs.",
   keywords: [
     "Sri Lanka",
+    "CeylonCopilot",
+    "Sri Lanka travel copilot",
+    "Sri Lanka travel assistant",
     "Sri Lanka travel",
     "Sri Lanka itinerary",
     "visit Sri Lanka",
@@ -47,32 +50,32 @@ export const metadata: Metadata = {
     "Ella Sri Lanka",
     "Nuwara Eliya",
   ],
-  authors: [{ name: "CeylonWander Team" }],
-  creator: "CeylonWander",
-  publisher: "CeylonWander",
+  authors: [{ name: "CeylonCopilot Team" }],
+  creator: "CeylonCopilot",
+  publisher: "CeylonCopilot",
   alternates: {
-    canonical: "https://ceylonwander.pages.dev",
+    canonical: "https://ceyloncopilot.pages.dev",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://ceylonwander.pages.dev",
-    siteName: "CeylonWander",
-    title: "CeylonWander 🇱🇰 | The Definitive Sri Lanka Travel Engine",
+    url: "https://ceyloncopilot.pages.dev",
+    siteName: "CeylonCopilot",
+    title: "CeylonCopilot 🇱🇰 | The Intelligent Sri Lanka Travel Assistant",
     description:
-      "Travel Sri Lanka without the mountain delays, scams, or guesswork. Engineered for real topography, dual-pricing transparency, and authentic cultural discovery.",
+      "Travel Sri Lanka without mountain delays, scams, or guesswork. Engineered with real topography routing, scenic train copilot, safari calendars, and fair fare calculator.",
     images: [
       {
         url: "https://images.unsplash.com/photo-1546708973-b339540b5162?w=1200&auto=format&fit=crop&q=80",
         width: 1200,
         height: 630,
-        alt: "Nine Arch Bridge Ella Sri Lanka with Blue Train",
+        alt: "Nine Arch Bridge Ella Sri Lanka with Blue Train - CeylonCopilot",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CeylonWander 🇱🇰 | The Definitive Sri Lanka Travel Engine",
+    title: "CeylonCopilot 🇱🇰 | The Intelligent Sri Lanka Travel Assistant",
     description:
       "Travel Sri Lanka without mountain delays or scams: true topography routing, scenic train copilot, safari guide, and fair fare calculator.",
     images: [
@@ -97,23 +100,23 @@ const structuredData = {
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://ceylonwander.pages.dev/#website",
-      "url": "https://ceylonwander.pages.dev",
-      "name": "CeylonWander",
-      "description": "The Definitive Sri Lanka Travel & Discovery Engine",
+      "@id": "https://ceyloncopilot.pages.dev/#website",
+      "url": "https://ceyloncopilot.pages.dev",
+      "name": "CeylonCopilot",
+      "description": "The Intelligent Sri Lanka Travel Assistant & Route Engine",
       "inLanguage": "en-US",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://ceylonwander.pages.dev/explore?q={search_term_string}",
+        "target": "https://ceyloncopilot.pages.dev/explore?q={search_term_string}",
         "query-input": "required name=search_term_string"
       }
     },
     {
       "@type": "TouristDestination",
-      "@id": "https://ceylonwander.pages.dev/#destination",
+      "@id": "https://ceyloncopilot.pages.dev/#destination",
       "name": "Sri Lanka",
       "description": "The Resplendent Isle featuring UNESCO Cultural Triangle citadels, central tea highlands, leopard safaris in Yala, and turquoise southern surf coasts.",
-      "url": "https://ceylonwander.pages.dev",
+      "url": "https://ceyloncopilot.pages.dev",
       "touristType": ["Cultural tourism", "Eco tourism", "Adventure travel", "Surfing", "Wildlife safari"]
     }
   ]
@@ -127,7 +130,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth">
       <head>
-
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

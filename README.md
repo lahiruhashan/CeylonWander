@@ -1,7 +1,7 @@
-# CeylonWander 🇱🇰
-> Offline-First, Topography-Aware Travel Discovery Platform for Sri Lanka
+# CeylonCopilot 🇱🇰
+> Offline-First, Topography-Aware Travel Assistant & Route Engine for Sri Lanka
 
-CeylonWander is engineered specifically for Sri Lanka's unique travel realities:
+CeylonCopilot is engineered specifically for Sri Lanka's unique travel realities:
 - **Topography-Aware Travel Times:** Computes true driving/tuk-tuk travel times accounting for hill-country switchbacks and elevation gains instead of misleading straight-line distances.
 - **Dual-Pricing Transparency:** Clear 3-tier fee breakdowns (Foreign National USD/LKR vs. SAARC passport holders vs. Sri Lankan citizens).
 - **Cultural & Dress Etiquette:** Standardized alerts for sacred sites (shoulder/knee coverings, footwear removal, hot granite pavement warnings, and Buddha statue photography rules).
@@ -20,7 +20,7 @@ CeylonWander is engineered specifically for Sri Lanka's unique travel realities:
                                            | REST API
                                            v
                       +------------------------------------------+
-                      |         CeylonWander API Gateway         |
+                      |         CeylonCopilot API Gateway        |
                       |          FastAPI (Python 3.11+)          |
                       +--------------------+---------------------+
                                            |

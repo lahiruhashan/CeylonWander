@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       },
     ],
-    sitemap: 'https://ceylonwander.pages.dev/sitemap.xml',
+    sitemap: 'https://ceyloncopilot.pages.dev/sitemap.xml',
   };
 }

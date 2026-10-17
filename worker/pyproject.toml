@@ -1,6 +1,6 @@
 [project]
-name = "ceylonwander-api"
+name = "ceyloncopilot-api"
 version = "1.0.0"
-description = "Native Python Worker for CeylonWander running on Cloudflare edge"
+description = "Native Python Worker for CeylonCopilot running on Cloudflare edge"
 requires-python = ">=3.11"
 dependencies = []

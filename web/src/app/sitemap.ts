@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://ceylonwander.pages.dev';
+  const baseUrl = 'https://ceyloncopilot.pages.dev';
   const lastModified = new Date();
 
   return [

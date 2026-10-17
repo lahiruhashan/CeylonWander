@@ -53,7 +53,7 @@ async function fetchApi(endpoint: string, init?: RequestInit): Promise<Response>
 function getStoredPlaces(): Place[] {
   if (typeof window === 'undefined') return [];
   try {
-    const raw = localStorage.getItem('ceylonwander_user_places');
+    const raw = localStorage.getItem('ceyloncopilot_user_places') || localStorage.getItem('ceylonwander_user_places');
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
@@ -65,7 +65,7 @@ function saveStoredPlace(place: Place) {
   try {
     const current = getStoredPlaces();
     const updated = [place, ...current.filter((p) => p.id !== place.id)];
-    localStorage.setItem('ceylonwander_user_places', JSON.stringify(updated));
+    localStorage.setItem('ceyloncopilot_user_places', JSON.stringify(updated));
   } catch (err) {
     console.warn('Failed to save to localStorage:', err);
   }

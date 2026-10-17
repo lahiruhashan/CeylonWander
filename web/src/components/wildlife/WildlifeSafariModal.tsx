@@ -280,7 +280,7 @@ export default function WildlifeSafariModal({ isOpen, onClose }: WildlifeSafariM
         {/* Footer */}
         <div className="bg-gray-50 p-4 border-t border-gray-200 flex items-center justify-between text-xs shrink-0">
           <span className="text-gray-500 font-medium">
-            🐘 CeylonWander promotes zero-harassment ethical safari operators.
+            🐘 CeylonCopilot promotes zero-harassment ethical safari operators.
           </span>
           <button
             onClick={onClose}

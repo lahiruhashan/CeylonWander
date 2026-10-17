@@ -3,13 +3,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "CeylonWander"
+    PROJECT_NAME: str = "CeylonCopilot"
     API_V1_STR: str = "/api/v1"
     
     # Database config: default to SQLite aiosqlite for zero-setup local dev/tests, or Postgres+PostGIS
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL", 
-        "sqlite+aiosqlite:///./ceylonwander.db"
+        "sqlite+aiosqlite:///./ceyloncopilot.db"
     )
     
     # OSRM Routing URL for true travel time

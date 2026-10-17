@@ -116,7 +116,7 @@ class Default(WorkerEntrypoint):
         if path == "/health" or path == "/":
             return json_response({
                 "status": "healthy",
-                "app": "CeylonWander Edge API",
+                "app": "CeylonCopilot Edge API",
                 "platform": "Cloudflare Python Workers",
                 "total_places": len(NATIONWIDE_PLACES),
                 "total_regions": len(NATIONWIDE_REGIONS),
