@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "deploy": "next build && npx wrangler@3 pages deploy out --project-name=ceyloncopilot",
     "start": "next start",
     "lint": "next lint"
   },
