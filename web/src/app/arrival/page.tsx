@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import AirportArrivalGuide from '@/components/journey/AirportArrivalGuide';
 import Navbar from '@/components/navigation/Navbar';
+import { ISLAND_IMAGES } from '@/data/island_images';
 
 export const metadata: Metadata = {
   title: 'CMB Airport Arrival Guide Sri Lanka | Land Ready Copilot',
@@ -64,8 +65,17 @@ export default function ArrivalPage() {
       {/* Top Banner Navigation */}
       <Navbar pageSubtitle="Arrival Guide · Phase 1" />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-10 md:py-16 border-b border-white/10">
+      {/* Hero Section with Photographic Atmosphere */}
+      <section className="relative overflow-hidden py-12 md:py-20 border-b border-white/10">
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <img
+            src={ISLAND_IMAGES.arrivalFlight.url}
+            alt={ISLAND_IMAGES.arrivalFlight.alt}
+            className="w-full h-full object-cover opacity-20 filter saturate-150"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#05140e] via-[#05140e]/85 to-[#05140e]/95" />
+        </div>
+
         <div className="max-w-5xl mx-auto px-4 relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 mb-4">
             <PlaneLanding size={14} /> Phase 1 of 4: Landing & First 24 Hours
@@ -82,19 +92,19 @@ export default function ArrivalPage() {
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-xl p-3.5">
+            <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-xl p-3.5">
               <span className="text-neutral-400 text-xs block">Terminal Code</span>
               <span className="text-white font-bold text-base">CMB (Katunayake)</span>
             </div>
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-xl p-3.5">
+            <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-xl p-3.5">
               <span className="text-neutral-400 text-xs block">Best 50GB SIM</span>
               <span className="text-emerald-400 font-bold text-base">Dialog (~$10 USD)</span>
             </div>
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-xl p-3.5">
+            <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-xl p-3.5">
               <span className="text-neutral-400 text-xs block">Fee-Free ATMs</span>
               <span className="text-white font-bold text-base">BOC & Commercial</span>
             </div>
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-xl p-3.5">
+            <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-xl p-3.5">
               <span className="text-neutral-400 text-xs block">Expressway Bus</span>
               <span className="text-sky-400 font-bold text-base">#187 (Rs 500 / $1.60)</span>
             </div>
@@ -109,6 +119,81 @@ export default function ArrivalPage() {
             <span>Terminal Walkthrough & Interactive Copilot</span>
           </h2>
           <AirportArrivalGuide />
+        </div>
+
+        {/* First Night Decision: Negombo vs Colombo Photo Showcase */}
+        <div className="bg-neutral-900/90 border border-neutral-800 rounded-3xl p-6 md:p-8 space-y-6">
+          <div>
+            <span className="text-xs font-black uppercase tracking-wider text-emerald-400 block mb-1">
+              Strategic First Night
+            </span>
+            <h2 className="text-2xl font-black text-white font-serif">
+              Where to Sleep on Night 1: Negombo vs Colombo
+            </h2>
+            <p className="text-xs text-neutral-300 mt-1">
+              Bandaranaike International Airport is located in Katunayake — not in downtown Colombo. Choose your first night based on flight arrival time.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-5">
+            {/* Negombo */}
+            <div className="bg-neutral-950/80 border border-emerald-500/30 rounded-2xl p-4 overflow-hidden flex flex-col justify-between group">
+              <div>
+                <div className="relative h-44 w-full overflow-hidden rounded-xl mb-3.5 bg-neutral-900">
+                  <img
+                    src={ISLAND_IMAGES.arrivalNegombo.url}
+                    alt={ISLAND_IMAGES.arrivalNegombo.alt}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+                  <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-emerald-500/90 text-neutral-950 font-black text-[11px]">
+                    RECOMMENDED (LATE FLIGHTS)
+                  </span>
+                  <span className="absolute bottom-2.5 left-2.5 text-xs text-white font-bold">
+                    15–20 Mins from CMB · Low Stress
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-1">Negombo Beach Lagoon</h3>
+                <p className="text-xs text-neutral-300 leading-relaxed">
+                  Avoid late-night expressway fatigue. Wake up to palm-lined beaches, fresh seafood, and tranquil lagoon resorts. Perfect if your flight lands after 18:00.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-neutral-800 flex items-center justify-between text-xs">
+                <span className="text-neutral-400">PickMe Cab: ~Rs 2,500 ($8 USD)</span>
+                <span className="text-emerald-400 font-bold">Zero Tolls</span>
+              </div>
+            </div>
+
+            {/* Colombo */}
+            <div className="bg-neutral-950/80 border border-neutral-800 rounded-2xl p-4 overflow-hidden flex flex-col justify-between group">
+              <div>
+                <div className="relative h-44 w-full overflow-hidden rounded-xl mb-3.5 bg-neutral-900">
+                  <img
+                    src={ISLAND_IMAGES.colomboCoastline.url}
+                    alt={ISLAND_IMAGES.colomboCoastline.alt}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+                  <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-sky-500/90 text-neutral-950 font-black text-[11px]">
+                    MORNING TRAIN LAUNCHPAD
+                  </span>
+                  <span className="absolute bottom-2.5 left-2.5 text-xs text-white font-bold">
+                    35–50 Mins via E03 Expressway
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-1">Colombo Fort & Marine Drive</h3>
+                <p className="text-xs text-neutral-300 leading-relaxed">
+                  Head straight to the capital if you have reserved seats on the 05:55 morning train to Kandy from Colombo Fort Station, or wish to explore colonial architecture.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-neutral-800 flex items-center justify-between text-xs">
+                <span className="text-neutral-400">PickMe Cab: ~Rs 4,500 ($15 USD)</span>
+                <span className="text-sky-400 font-bold">Expressway Included</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Essential Arrival Checklist & Customs Warnings */}

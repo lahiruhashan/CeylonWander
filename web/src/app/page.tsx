@@ -10,6 +10,7 @@ import {
   Tag
 } from 'lucide-react';
 import Navbar from '@/components/navigation/Navbar';
+import { ISLAND_IMAGES } from '@/data/island_images';
 
 // Stations data for interactive train scrubber
 const STATIONS = [
@@ -468,17 +469,23 @@ export default function CinematicLandingPage() {
             {/* Phase 1: Arrive */}
             <Link
               href="/arrival"
-              className="bg-neutral-900/80 border border-emerald-500/30 hover:border-emerald-400/60 p-6 rounded-3xl transition-all hover:scale-[1.02] flex flex-col justify-between space-y-4 group shadow-xl"
+              className="bg-neutral-900/90 border border-emerald-500/30 hover:border-emerald-400/60 p-4 rounded-3xl transition-all hover:scale-[1.02] flex flex-col justify-between group shadow-xl overflow-hidden"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-2xl p-2.5 rounded-2xl bg-emerald-500/15 text-emerald-400 inline-block">
-                    ✈️
-                  </span>
-                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
-                    Phase 1
-                  </span>
+                <div className="relative h-36 w-full overflow-hidden rounded-2xl mb-4 bg-neutral-950">
+                  <img
+                    src={ISLAND_IMAGES.arrivalFlight.url}
+                    alt={ISLAND_IMAGES.arrivalFlight.alt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-black/30" />
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-black text-white">
+                    <span>✈️</span>
+                    <span>PHASE 1</span>
+                  </div>
                 </div>
+
                 <h3 className="text-lg font-black text-white group-hover:text-emerald-300 transition-colors">
                   Arrive at CMB
                 </h3>
@@ -486,7 +493,7 @@ export default function CinematicLandingPage() {
                   Avoid $50 taxi touts. Fee-free BOC/Commercial ATMs, Dialog 50GB SIM counter, PickMe outer bay, and Negombo first-night strategy.
                 </p>
               </div>
-              <div className="pt-3 border-t border-neutral-800 text-xs font-bold text-emerald-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              <div className="pt-3 border-t border-neutral-800 text-xs font-bold text-emerald-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform mt-4">
                 <span>Arrival Copilot Guide</span>
                 <ArrowRight size={13} />
               </div>
@@ -495,17 +502,23 @@ export default function CinematicLandingPage() {
             {/* Phase 2: Move */}
             <Link
               href="/transport"
-              className="bg-neutral-900/80 border border-teal-500/30 hover:border-teal-400/60 p-6 rounded-3xl transition-all hover:scale-[1.02] flex flex-col justify-between space-y-4 group shadow-xl"
+              className="bg-neutral-900/90 border border-teal-500/30 hover:border-teal-400/60 p-4 rounded-3xl transition-all hover:scale-[1.02] flex flex-col justify-between group shadow-xl overflow-hidden"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-2xl p-2.5 rounded-2xl bg-teal-500/15 text-teal-400 inline-block">
-                    🛺
-                  </span>
-                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-teal-500/20 text-teal-300">
-                    Phase 2
-                  </span>
+                <div className="relative h-36 w-full overflow-hidden rounded-2xl mb-4 bg-neutral-950">
+                  <img
+                    src={ISLAND_IMAGES.trainNineArch.url}
+                    alt={ISLAND_IMAGES.trainNineArch.alt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-black/30" />
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-black text-white">
+                    <span>🛺</span>
+                    <span>PHASE 2</span>
+                  </div>
                 </div>
+
                 <h3 className="text-lg font-black text-white group-hover:text-teal-300 transition-colors">
                   Move Across Island
                 </h3>
@@ -513,7 +526,7 @@ export default function CinematicLandingPage() {
                   Mountain 24 km/h speed physics, Kandy-Ella scenic train seat guide, fuel-benchmarked tuk-tuk meter, and mandatory AAC self-drive rules.
                 </p>
               </div>
-              <div className="pt-3 border-t border-neutral-800 text-xs font-bold text-teal-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              <div className="pt-3 border-t border-neutral-800 text-xs font-bold text-teal-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform mt-4">
                 <span>Transport & Speed Physics</span>
                 <ArrowRight size={13} />
               </div>
@@ -522,17 +535,23 @@ export default function CinematicLandingPage() {
             {/* Phase 3: Stay */}
             <Link
               href="/stay"
-              className="bg-neutral-900/80 border border-amber-500/30 hover:border-amber-400/60 p-6 rounded-3xl transition-all hover:scale-[1.02] flex flex-col justify-between space-y-4 group shadow-xl"
+              className="bg-neutral-900/90 border border-amber-500/30 hover:border-amber-400/60 p-4 rounded-3xl transition-all hover:scale-[1.02] flex flex-col justify-between group shadow-xl overflow-hidden"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-2xl p-2.5 rounded-2xl bg-amber-500/15 text-amber-400 inline-block">
-                    ☀️
-                  </span>
-                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">
-                    Phase 3
-                  </span>
+                <div className="relative h-36 w-full overflow-hidden rounded-2xl mb-4 bg-neutral-950">
+                  <img
+                    src={ISLAND_IMAGES.mirissaPalms.url}
+                    alt={ISLAND_IMAGES.mirissaPalms.alt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-black/30" />
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-black text-white">
+                    <span>☀️</span>
+                    <span>PHASE 3</span>
+                  </div>
                 </div>
+
                 <h3 className="text-lg font-black text-white group-hover:text-amber-300 transition-colors">
                   Stay & Cultural Rules
                 </h3>
@@ -540,7 +559,7 @@ export default function CinematicLandingPage() {
                   Dual-monsoon compass (where it is sunny right now), burning temple granite socks hack, Poya full-moon alcohol laws, and ethical safaris.
                 </p>
               </div>
-              <div className="pt-3 border-t border-neutral-800 text-xs font-bold text-amber-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              <div className="pt-3 border-t border-neutral-800 text-xs font-bold text-amber-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform mt-4">
                 <span>Stay & Living Intelligence</span>
                 <ArrowRight size={13} />
               </div>
@@ -549,17 +568,23 @@ export default function CinematicLandingPage() {
             {/* Phase 4: Leave */}
             <Link
               href="/departure"
-              className="bg-neutral-900/80 border border-rose-500/30 hover:border-rose-400/60 p-6 rounded-3xl transition-all hover:scale-[1.02] flex flex-col justify-between space-y-4 group shadow-xl"
+              className="bg-neutral-900/90 border border-rose-500/30 hover:border-rose-400/60 p-4 rounded-3xl transition-all hover:scale-[1.02] flex flex-col justify-between group shadow-xl overflow-hidden"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-2xl p-2.5 rounded-2xl bg-rose-500/15 text-rose-400 inline-block">
-                    🛫
-                  </span>
-                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-rose-500/20 text-rose-300">
-                    Phase 4
-                  </span>
+                <div className="relative h-36 w-full overflow-hidden rounded-2xl mb-4 bg-neutral-950">
+                  <img
+                    src={ISLAND_IMAGES.galleFortLighthouse.url}
+                    alt={ISLAND_IMAGES.galleFortLighthouse.alt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-black/30" />
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-black text-white">
+                    <span>🛫</span>
+                    <span>PHASE 4</span>
+                  </div>
                 </div>
+
                 <h3 className="text-lg font-black text-white group-hover:text-rose-300 transition-colors">
                   Leave on Time
                 </h3>
@@ -567,7 +592,7 @@ export default function CinematicLandingPage() {
                   Interactive flight leave-by calculator, CMB outdoor baggage security line warning, and saving 70% on Ceylon tea at local supermarkets.
                 </p>
               </div>
-              <div className="pt-3 border-t border-neutral-800 text-xs font-bold text-rose-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              <div className="pt-3 border-t border-neutral-800 text-xs font-bold text-rose-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform mt-4">
                 <span>Departure Copilot</span>
                 <ArrowRight size={13} />
               </div>
@@ -619,21 +644,31 @@ export default function CinematicLandingPage() {
             {/* Biome 1: Highlands */}
             <Link
               href="/train"
-              className="bg-[#0a2318]/70 border border-white/10 hover:border-emerald-500/40 p-6 rounded-3xl backdrop-blur-md transition-all hover:shadow-2xl hover:scale-[1.01] flex flex-col justify-between space-y-4 group"
+              className="bg-neutral-900/90 border border-white/10 hover:border-emerald-500/40 p-4 rounded-3xl backdrop-blur-md transition-all hover:shadow-2xl hover:scale-[1.01] flex flex-col justify-between group overflow-hidden"
             >
               <div>
-                <span className="text-3xl p-2.5 rounded-2xl bg-white/5 inline-block mb-3">⛰️</span>
-                <span className="text-[10px] font-black uppercase text-emerald-400 tracking-wider block">
-                  Elevation 1,000m – 2,500m
-                </span>
-                <h3 className="text-xl font-black text-white font-serif group-hover:text-emerald-300 transition-colors mt-1">
+                <div className="relative h-40 w-full overflow-hidden rounded-2xl mb-4 bg-neutral-950">
+                  <img
+                    src={ISLAND_IMAGES.trainTeaHills.url}
+                    alt={ISLAND_IMAGES.trainTeaHills.alt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-black/30" />
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-black text-emerald-400">
+                    <span>⛰️</span>
+                    <span>1,000m – 2,500m</span>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-black text-white font-serif group-hover:text-emerald-300 transition-colors">
                   Central Tea Highlands
                 </h3>
                 <p className="text-xs text-gray-300 mt-2 leading-relaxed">
                   Cascading tea plantations, cold eucalyptus air, roaring ravines, and the iconic Nine Arch Bridge. Temperature drops to 12°C at night.
                 </p>
               </div>
-              <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+              <span className="text-xs font-bold text-emerald-400 flex items-center gap-1 mt-4 pt-3 border-t border-neutral-800">
                 <span>Scenic Train & Stations Guide</span>
                 <ArrowRight size={13} />
               </span>
@@ -642,21 +677,31 @@ export default function CinematicLandingPage() {
             {/* Biome 2: Cultural Triangle */}
             <Link
               href="/culture"
-              className="bg-[#0a2318]/70 border border-white/10 hover:border-purple-500/40 p-6 rounded-3xl backdrop-blur-md transition-all hover:shadow-2xl hover:scale-[1.01] flex flex-col justify-between space-y-4 group"
+              className="bg-neutral-900/90 border border-white/10 hover:border-purple-500/40 p-4 rounded-3xl backdrop-blur-md transition-all hover:shadow-2xl hover:scale-[1.01] flex flex-col justify-between group overflow-hidden"
             >
               <div>
-                <span className="text-3xl p-2.5 rounded-2xl bg-white/5 inline-block mb-3">🏛️</span>
-                <span className="text-[10px] font-black uppercase text-purple-400 tracking-wider block">
-                  UNESCO Sacred Heritage
-                </span>
-                <h3 className="text-xl font-black text-white font-serif group-hover:text-purple-300 transition-colors mt-1">
+                <div className="relative h-40 w-full overflow-hidden rounded-2xl mb-4 bg-neutral-950">
+                  <img
+                    src={ISLAND_IMAGES.sigiriyaRock.url}
+                    alt={ISLAND_IMAGES.sigiriyaRock.alt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-black/30" />
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-black text-purple-300">
+                    <span>🏛️</span>
+                    <span>UNESCO HERITAGE</span>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-black text-white font-serif group-hover:text-purple-300 transition-colors">
                   The Cultural Triangle
                 </h3>
                 <p className="text-xs text-gray-300 mt-2 leading-relaxed">
                   Sigiriya Lion Rock sky fortress, Dambulla cave murals, and towering brick stupas built over 2,000 years ago across dry northern plains.
                 </p>
               </div>
-              <span className="text-xs font-bold text-purple-400 flex items-center gap-1">
+              <span className="text-xs font-bold text-purple-400 flex items-center gap-1 mt-4 pt-3 border-t border-neutral-800">
                 <span>Poya Calendar & Temple Etiquette</span>
                 <ArrowRight size={13} />
               </span>
@@ -665,21 +710,31 @@ export default function CinematicLandingPage() {
             {/* Biome 3: Wildlife */}
             <Link
               href="/wildlife"
-              className="bg-[#0a2318]/70 border border-white/10 hover:border-amber-500/40 p-6 rounded-3xl backdrop-blur-md transition-all hover:shadow-2xl hover:scale-[1.01] flex flex-col justify-between space-y-4 group"
+              className="bg-neutral-900/90 border border-white/10 hover:border-amber-500/40 p-4 rounded-3xl backdrop-blur-md transition-all hover:shadow-2xl hover:scale-[1.01] flex flex-col justify-between group overflow-hidden"
             >
               <div>
-                <span className="text-3xl p-2.5 rounded-2xl bg-white/5 inline-block mb-3">🐘</span>
-                <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider block">
-                  Wildlife & Marine Corridors
-                </span>
-                <h3 className="text-xl font-black text-white font-serif group-hover:text-amber-300 transition-colors mt-1">
+                <div className="relative h-40 w-full overflow-hidden rounded-2xl mb-4 bg-neutral-950">
+                  <img
+                    src={ISLAND_IMAGES.wildElephants.url}
+                    alt={ISLAND_IMAGES.wildElephants.alt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-black/30" />
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-black text-amber-300">
+                    <span>🐘</span>
+                    <span>SAFARIS & WHALES</span>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-black text-white font-serif group-hover:text-amber-300 transition-colors">
                   National Parks & Safaris
                 </h3>
                 <p className="text-xs text-gray-300 mt-2 leading-relaxed">
                   Highest leopard density in Yala, guaranteed elephant herds in Udawalawe, the Great Gathering in Minneriya, and blue whales in Mirissa.
                 </p>
               </div>
-              <span className="text-xs font-bold text-amber-400 flex items-center gap-1">
+              <span className="text-xs font-bold text-amber-400 flex items-center gap-1 mt-4 pt-3 border-t border-neutral-800">
                 <span>Safari & Whales Matrix</span>
                 <ArrowRight size={13} />
               </span>
@@ -688,21 +743,31 @@ export default function CinematicLandingPage() {
             {/* Biome 4: Food */}
             <Link
               href="/food"
-              className="bg-[#0a2318]/70 border border-white/10 hover:border-orange-500/40 p-6 rounded-3xl backdrop-blur-md transition-all hover:shadow-2xl hover:scale-[1.01] flex flex-col justify-between space-y-4 group"
+              className="bg-neutral-900/90 border border-white/10 hover:border-orange-500/40 p-4 rounded-3xl backdrop-blur-md transition-all hover:shadow-2xl hover:scale-[1.01] flex flex-col justify-between group overflow-hidden"
             >
               <div>
-                <span className="text-3xl p-2.5 rounded-2xl bg-white/5 inline-block mb-3">🍛</span>
-                <span className="text-[10px] font-black uppercase text-orange-400 tracking-wider block">
-                  Authentic Culinary Heritage
-                </span>
-                <h3 className="text-xl font-black text-white font-serif group-hover:text-orange-300 transition-colors mt-1">
+                <div className="relative h-40 w-full overflow-hidden rounded-2xl mb-4 bg-neutral-950">
+                  <img
+                    src={ISLAND_IMAGES.sriLankanCurry.url}
+                    alt={ISLAND_IMAGES.sriLankanCurry.alt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-black/30" />
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-black text-orange-300">
+                    <span>🍛</span>
+                    <span>CULINARY HERITAGE</span>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-black text-white font-serif group-hover:text-orange-300 transition-colors">
                   Food & Street Eatery Guide
                 </h3>
                 <p className="text-xs text-gray-300 mt-2 leading-relaxed">
                   Rhythmic midnight Kottu Roti, morning Egg Hoppers, spicy coconut Pol Sambol, and southern Fish Ambul Thiyal decoded with ordering phrases.
                 </p>
               </div>
-              <span className="text-xs font-bold text-orange-400 flex items-center gap-1">
+              <span className="text-xs font-bold text-orange-400 flex items-center gap-1 mt-4 pt-3 border-t border-neutral-800">
                 <span>Culinary Decoder</span>
                 <ArrowRight size={13} />
               </span>
@@ -711,21 +776,31 @@ export default function CinematicLandingPage() {
             {/* Biome 5: Toolkit */}
             <Link
               href="/toolkit"
-              className="bg-[#0a2318]/70 border border-white/10 hover:border-teal-500/40 p-6 rounded-3xl backdrop-blur-md transition-all hover:shadow-2xl hover:scale-[1.01] flex flex-col justify-between space-y-4 group"
+              className="bg-neutral-900/90 border border-white/10 hover:border-teal-500/40 p-4 rounded-3xl backdrop-blur-md transition-all hover:shadow-2xl hover:scale-[1.01] flex flex-col justify-between group overflow-hidden"
             >
               <div>
-                <span className="text-3xl p-2.5 rounded-2xl bg-white/5 inline-block mb-3">🧰</span>
-                <span className="text-[10px] font-black uppercase text-teal-400 tracking-wider block">
-                  Field Utilities
-                </span>
-                <h3 className="text-xl font-black text-white font-serif group-hover:text-teal-300 transition-colors mt-1">
+                <div className="relative h-40 w-full overflow-hidden rounded-2xl mb-4 bg-neutral-950">
+                  <img
+                    src={ISLAND_IMAGES.arrivalNegombo.url}
+                    alt={ISLAND_IMAGES.arrivalNegombo.alt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-black/30" />
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-black text-teal-300">
+                    <span>🧰</span>
+                    <span>FIELD UTILITIES</span>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-black text-white font-serif group-hover:text-teal-300 transition-colors">
                   Traveler Field Toolkit
                 </h3>
                 <p className="text-xs text-gray-300 mt-2 leading-relaxed">
                   Tuk-Tuk fair fare calculator, daily budget in USD/EUR/GBP, airport SIM & eSIM packages, self-drive driving laws, and 1-tap 1990 ambulance.
                 </p>
               </div>
-              <span className="text-xs font-bold text-teal-400 flex items-center gap-1">
+              <span className="text-xs font-bold text-teal-400 flex items-center gap-1 mt-4 pt-3 border-t border-neutral-800">
                 <span>Open Field Toolkit</span>
                 <ArrowRight size={13} />
               </span>
@@ -734,21 +809,31 @@ export default function CinematicLandingPage() {
             {/* Biome 6: Explorer Vector Map */}
             <Link
               href="/explore"
-              className="bg-gradient-to-br from-emerald-900 to-teal-950 border border-emerald-400/30 p-6 rounded-3xl backdrop-blur-md transition-all hover:shadow-2xl hover:scale-[1.01] flex flex-col justify-between space-y-4 group"
+              className="bg-neutral-900/90 border border-emerald-400/30 p-4 rounded-3xl backdrop-blur-md transition-all hover:shadow-2xl hover:scale-[1.01] flex flex-col justify-between group overflow-hidden"
             >
               <div>
-                <span className="text-3xl p-2.5 rounded-2xl bg-white/10 inline-block mb-3">🗺️</span>
-                <span className="text-[10px] font-black uppercase text-amber-300 tracking-wider block">
-                  Vector Map Engine
-                </span>
-                <h3 className="text-xl font-black text-white font-serif group-hover:text-amber-300 transition-colors mt-1">
+                <div className="relative h-40 w-full overflow-hidden rounded-2xl mb-4 bg-neutral-950">
+                  <img
+                    src={ISLAND_IMAGES.colomboCoastline.url}
+                    alt={ISLAND_IMAGES.colomboCoastline.alt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-black/30" />
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-black text-amber-300">
+                    <span>🗺️</span>
+                    <span>VECTOR MAP ENGINE</span>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-black text-white font-serif group-hover:text-amber-300 transition-colors">
                   Interactive Vector Map
                 </h3>
                 <p className="text-xs text-emerald-100 mt-2 leading-relaxed">
                   110+ curated destinations, dual-pricing tags, elevation indicators, switchback loops, and offline regional packs.
                 </p>
               </div>
-              <span className="text-xs font-bold text-amber-300 flex items-center gap-1">
+              <span className="text-xs font-bold text-amber-300 flex items-center gap-1 mt-4 pt-3 border-t border-neutral-800">
                 <span>Launch Interactive Map</span>
                 <ArrowRight size={13} />
               </span>
@@ -798,6 +883,25 @@ export default function CinematicLandingPage() {
                     {s.name.split(' ')[0]}
                   </span>
                 ))}
+              </div>
+            </div>
+
+            {/* Visual Station Preview */}
+            <div className="relative h-44 sm:h-56 w-full overflow-hidden rounded-2xl bg-neutral-950 border border-blue-500/20 group">
+              <img
+                src={trainStationIdx >= 3 ? ISLAND_IMAGES.trainNineArch.url : ISLAND_IMAGES.trainTeaHills.url}
+                alt="Scenic Mountain Railway Sri Lanka"
+                className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+              <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <span className="font-bold text-white bg-black/60 px-3 py-1 rounded-lg backdrop-blur-md border border-white/10">
+                  🔭 View: {currentStation.view}
+                </span>
+                <span className="text-blue-300 font-mono text-[11px] bg-blue-950/80 px-2.5 py-1 rounded-lg border border-blue-500/30 font-bold">
+                  {currentStation.duration}
+                </span>
               </div>
             </div>
 
@@ -861,15 +965,44 @@ export default function CinematicLandingPage() {
               <p className="text-xs text-gray-300 leading-relaxed">{currentMonth.summary}</p>
 
               <div className="grid sm:grid-cols-2 gap-3 pt-2 text-xs">
-                <div className={`p-3 rounded-xl border ${currentMonth.south.sunny ? 'bg-amber-500/10 border-amber-500/30' : 'bg-sky-500/10 border-sky-500/30'}`}>
-                  <strong className="text-white block">South & West Coast (Galle, Mirissa, Weligama)</strong>
-                  <span className={currentMonth.south.sunny ? 'text-amber-300 font-bold' : 'text-sky-300 font-bold'}>
+                <div className={`p-3.5 rounded-xl border overflow-hidden flex flex-col justify-between ${currentMonth.south.sunny ? 'bg-amber-500/10 border-amber-500/30' : 'bg-sky-500/10 border-sky-500/30'}`}>
+                  <div>
+                    <div className="h-28 w-full overflow-hidden rounded-lg mb-2.5 relative">
+                      <img
+                        src={ISLAND_IMAGES.mirissaPalms.url}
+                        alt="South Coast Sri Lanka"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                      <span className="absolute bottom-1.5 left-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-md text-[10px] font-bold text-white border border-white/10">
+                        South Coast: Galle · Mirissa · Weligama
+                      </span>
+                    </div>
+                    <strong className="text-white block">South & West Coast Conditions</strong>
+                  </div>
+                  <span className={`mt-2 font-bold text-sm ${currentMonth.south.sunny ? 'text-amber-300' : 'text-sky-300'}`}>
                     {currentMonth.south.status}
                   </span>
                 </div>
-                <div className={`p-3 rounded-xl border ${currentMonth.east.sunny ? 'bg-amber-500/10 border-amber-500/30' : 'bg-sky-500/10 border-sky-500/30'}`}>
-                  <strong className="text-white block">East & North Coast (Arugam Bay, Nilaveli)</strong>
-                  <span className={currentMonth.east.sunny ? 'text-amber-300 font-bold' : 'text-sky-300 font-bold'}>
+
+                <div className={`p-3.5 rounded-xl border overflow-hidden flex flex-col justify-between ${currentMonth.east.sunny ? 'bg-amber-500/10 border-amber-500/30' : 'bg-sky-500/10 border-sky-500/30'}`}>
+                  <div>
+                    <div className="h-28 w-full overflow-hidden rounded-lg mb-2.5 relative">
+                      <img
+                        src={ISLAND_IMAGES.tropicalBeach.url}
+                        alt="East Coast Sri Lanka"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                      <span className="absolute bottom-1.5 left-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-md text-[10px] font-bold text-white border border-white/10">
+                        East Coast: Arugam Bay · Nilaveli · Trinco
+                      </span>
+                    </div>
+                    <strong className="text-white block">East & North Coast Conditions</strong>
+                  </div>
+                  <span className={`mt-2 font-bold text-sm ${currentMonth.east.sunny ? 'text-amber-300' : 'text-sky-300'}`}>
                     {currentMonth.east.status}
                   </span>
                 </div>

@@ -10,6 +10,7 @@ import {
 import Navbar from '@/components/navigation/Navbar';
 import VerifiedBadge from '@/components/ui/VerifiedBadge';
 import { VERIFIED_PRICES } from '@/data/verified_prices_data';
+import { ISLAND_IMAGES } from '@/data/island_images';
 
 type Currency = 'LKR' | 'USD' | 'EUR' | 'GBP' | 'AUD' | 'INR';
 
@@ -66,8 +67,17 @@ export default function PricesPage() {
       {/* Top Banner Navigation */}
       <Navbar pageSubtitle="Fair-Price Meter" />
 
-      {/* Hero Header */}
-      <section className="py-10 md:py-14 border-b border-white/10 relative overflow-hidden">
+      {/* Hero Header with Photographic Atmosphere */}
+      <section className="py-12 md:py-16 border-b border-white/10 relative overflow-hidden">
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <img
+            src={ISLAND_IMAGES.sigiriyaRock.url}
+            alt={ISLAND_IMAGES.sigiriyaRock.alt}
+            className="w-full h-full object-cover opacity-20 filter saturate-150"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#05140e] via-[#05140e]/85 to-[#05140e]/95" />
+        </div>
+
         <div className="max-w-5xl mx-auto px-4 relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 mb-4">
             <Tag size={14} /> Ground Truth & Price Transparency

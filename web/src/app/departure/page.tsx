@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import LeaveByCalculator from '@/components/journey/LeaveByCalculator';
 import Navbar from '@/components/navigation/Navbar';
+import { ISLAND_IMAGES } from '@/data/island_images';
 
 export const metadata: Metadata = {
   title: 'CMB Flight Departure Copilot & Leave-By Calculator Sri Lanka',
@@ -64,8 +65,17 @@ export default function DeparturePage() {
       {/* Top Banner Navigation */}
       <Navbar pageSubtitle="Departure Guide · Phase 4" />
 
-      {/* Hero Header */}
-      <section className="py-10 md:py-16 border-b border-white/10 relative overflow-hidden">
+      {/* Hero Header with Photographic Atmosphere */}
+      <section className="py-12 md:py-20 border-b border-white/10 relative overflow-hidden">
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <img
+            src={ISLAND_IMAGES.galleFortLighthouse.url}
+            alt={ISLAND_IMAGES.galleFortLighthouse.alt}
+            className="w-full h-full object-cover opacity-20 filter saturate-150"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#05140e] via-[#05140e]/85 to-[#05140e]/95" />
+        </div>
+
         <div className="max-w-5xl mx-auto px-4 relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/15 border border-rose-500/30 text-rose-300 mb-4">
             <PlaneTakeoff size={14} /> Phase 4 of 4: Smooth Departures & Final Hours
@@ -81,19 +91,19 @@ export default function DeparturePage() {
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-xl p-3.5">
+            <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-xl p-3.5">
               <span className="text-neutral-400 text-xs block">Required Buffer</span>
               <span className="text-rose-400 font-bold text-base">3.0 Hours at Gate</span>
             </div>
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-xl p-3.5">
+            <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-xl p-3.5">
               <span className="text-neutral-400 text-xs block">From Negombo</span>
               <span className="text-white font-bold text-base">15 - 20 mins</span>
             </div>
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-xl p-3.5">
+            <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-xl p-3.5">
               <span className="text-neutral-400 text-xs block">From Galle (E01)</span>
               <span className="text-white font-bold text-base">2.0 - 2.5 hrs</span>
             </div>
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-xl p-3.5">
+            <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-xl p-3.5">
               <span className="text-neutral-400 text-xs block">From Kandy</span>
               <span className="text-amber-400 font-bold text-base">3.0 - 4.0 hrs</span>
             </div>
@@ -130,7 +140,28 @@ export default function DeparturePage() {
         </div>
 
         {/* Last-Minute Ceylon Tea & Souvenirs Guide */}
-        <div className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6 md:p-8 space-y-6">
+        <div className="bg-neutral-900/80 border border-neutral-800 rounded-3xl p-6 md:p-8 space-y-6 overflow-hidden">
+          <div className="relative h-44 sm:h-52 w-full overflow-hidden rounded-2xl bg-neutral-950 border border-amber-500/20 group">
+            <img
+              src={ISLAND_IMAGES.sriLankanCurry.url}
+              alt="Authentic Ceylon Tea, Spices and Souvenirs"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+            <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-bold text-amber-300">
+              ☕ Single-Origin Ceylon Tea & True Cinnamon
+            </div>
+            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-xs">
+              <span className="font-bold text-white">
+                Supermarket Savings Protocol (Save 70%)
+              </span>
+              <span className="text-amber-300 font-mono text-[11px] bg-amber-950/80 px-2 py-0.5 rounded border border-amber-500/30">
+                Fair Pricing
+              </span>
+            </div>
+          </div>
+
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
               <ShoppingBag size={22} />

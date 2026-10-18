@@ -12,6 +12,7 @@ import {
 import Navbar from '@/components/navigation/Navbar';
 import VerifiedBadge from '@/components/ui/VerifiedBadge';
 import { VERIFIED_PRICES } from '@/data/verified_prices_data';
+import { ISLAND_IMAGES } from '@/data/island_images';
 
 export default function TransportPage() {
   const [calcKm, setCalcKm] = useState<number>(7);
@@ -34,8 +35,17 @@ export default function TransportPage() {
       {/* Top Banner Navigation */}
       <Navbar pageSubtitle="Move Guide · Phase 2" />
 
-      {/* Hero Header */}
-      <section className="py-10 md:py-16 border-b border-white/10 relative overflow-hidden">
+      {/* Hero Header with Photographic Atmosphere */}
+      <section className="py-12 md:py-20 border-b border-white/10 relative overflow-hidden">
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <img
+            src={ISLAND_IMAGES.trainTeaHills.url}
+            alt={ISLAND_IMAGES.trainTeaHills.alt}
+            className="w-full h-full object-cover opacity-20 filter saturate-150"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#05140e] via-[#05140e]/85 to-[#05140e]/95" />
+        </div>
+
         <div className="max-w-5xl mx-auto px-4 relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-teal-500/15 border border-teal-500/30 text-teal-300 mb-4">
             <Navigation size={14} /> Phase 2 of 4: Island Transit & Route Physics
@@ -52,19 +62,19 @@ export default function TransportPage() {
 
           {/* Quick Metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-xl p-3.5">
+            <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-xl p-3.5">
               <span className="text-neutral-400 text-xs block">Mountain Real Speed</span>
               <span className="text-amber-400 font-bold text-base">22 - 28 km/h</span>
             </div>
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-xl p-3.5">
+            <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-xl p-3.5">
               <span className="text-neutral-400 text-xs block">Expressway Limit</span>
               <span className="text-emerald-400 font-bold text-base">100 km/h (E01/E03)</span>
             </div>
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-xl p-3.5">
+            <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-xl p-3.5">
               <span className="text-neutral-400 text-xs block">Tuk-Tuk Flat Benchmark</span>
               <span className="text-white font-bold text-base">Rs 95 - 100 / km</span>
             </div>
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-xl p-3.5">
+            <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-xl p-3.5">
               <span className="text-neutral-400 text-xs block">Kandy-Ella Elevation</span>
               <span className="text-sky-400 font-bold text-base">500m → 1,895m</span>
             </div>
@@ -224,7 +234,23 @@ export default function TransportPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Kandy to Ella */}
-            <div className="bg-neutral-950/70 border border-neutral-800 rounded-xl p-5 space-y-3">
+            <div className="bg-neutral-950/70 border border-neutral-800 rounded-2xl p-5 space-y-4 overflow-hidden group">
+              <div className="relative h-44 w-full overflow-hidden rounded-xl bg-neutral-900">
+                <img
+                  src={ISLAND_IMAGES.trainNineArch.url}
+                  alt={ISLAND_IMAGES.trainNineArch.alt}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+                <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-blue-500 text-neutral-950 font-black text-[11px]">
+                  ICONIC BLUE TRAIN
+                </span>
+                <span className="absolute bottom-2.5 left-2.5 text-xs text-white font-bold">
+                  Nine Arch Bridge & Tea Ridges
+                </span>
+              </div>
+
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-white text-base">Kandy → Ella Main Line</h3>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300">6.5 - 7.5 hrs</span>
@@ -232,7 +258,7 @@ export default function TransportPage() {
               <p className="text-xs text-neutral-300 leading-relaxed">
                 Regarded as one of the world&rsquo;s most breathtaking rail journeys, crossing Pattipola summit (1,895m elevation).
               </p>
-              <div className="bg-neutral-900 p-3 rounded-lg border border-neutral-800 text-xs space-y-2">
+              <div className="bg-neutral-900 p-3.5 rounded-xl border border-neutral-800 text-xs space-y-2">
                 <div>
                   <strong className="text-emerald-400 block">Where to sit (Kandy to Nuwara Eliya / Nanu Oya):</strong>
                   <span className="text-neutral-300">Right side of the train for dramatic tea estate valleys and waterfalls.</span>
@@ -249,7 +275,23 @@ export default function TransportPage() {
             </div>
 
             {/* Colombo to Galle */}
-            <div className="bg-neutral-950/70 border border-neutral-800 rounded-xl p-5 space-y-3">
+            <div className="bg-neutral-950/70 border border-neutral-800 rounded-2xl p-5 space-y-4 overflow-hidden group">
+              <div className="relative h-44 w-full overflow-hidden rounded-xl bg-neutral-900">
+                <img
+                  src={ISLAND_IMAGES.galleFortLighthouse.url}
+                  alt={ISLAND_IMAGES.galleFortLighthouse.alt}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+                <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-teal-500 text-neutral-950 font-black text-[11px]">
+                  OCEAN COASTAL EXPRESS
+                </span>
+                <span className="absolute bottom-2.5 left-2.5 text-xs text-white font-bold">
+                  Indian Ocean Sea Spray Track
+                </span>
+              </div>
+
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-white text-base">Colombo → Galle Coastal Line</h3>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-teal-500/20 text-teal-300">2.0 - 2.5 hrs</span>
@@ -257,7 +299,7 @@ export default function TransportPage() {
               <p className="text-xs text-neutral-300 leading-relaxed">
                 Skims the Indian Ocean shoreline so closely that sea spray occasionally hits open train windows.
               </p>
-              <div className="bg-neutral-900 p-3 rounded-lg border border-neutral-800 text-xs space-y-2">
+              <div className="bg-neutral-900 p-3.5 rounded-xl border border-neutral-800 text-xs space-y-2">
                 <div>
                   <strong className="text-teal-400 block">Where to sit (Colombo to Galle):</strong>
                   <span className="text-neutral-300">Right side facing the direction of travel for uninterrupted ocean waves and sunsets.</span>

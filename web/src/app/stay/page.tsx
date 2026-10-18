@@ -16,6 +16,7 @@ import {
 import Navbar from '@/components/navigation/Navbar';
 import VerifiedBadge from '@/components/ui/VerifiedBadge';
 import { VERIFIED_PRICES } from '@/data/verified_prices_data';
+import { ISLAND_IMAGES } from '@/data/island_images';
 
 export default function StayPage() {
   const [selectedMonth, setSelectedMonth] = useState<number>(10); // Default to current season (Oct/Nov)
@@ -76,8 +77,17 @@ export default function StayPage() {
       {/* Top Banner Navigation */}
       <Navbar pageSubtitle="Stay & Culture · Phase 3" />
 
-      {/* Hero Header */}
-      <section className="py-10 md:py-16 border-b border-white/10 relative overflow-hidden">
+      {/* Hero Header with Photographic Atmosphere */}
+      <section className="py-12 md:py-20 border-b border-white/10 relative overflow-hidden">
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <img
+            src={ISLAND_IMAGES.mirissaPalms.url}
+            alt={ISLAND_IMAGES.mirissaPalms.alt}
+            className="w-full h-full object-cover opacity-20 filter saturate-150"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#05140e] via-[#05140e]/85 to-[#05140e]/95" />
+        </div>
+
         <div className="max-w-5xl mx-auto px-4 relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-300 mb-4">
             <Compass size={14} /> Phase 3 of 4: Island Living & Cultural Intelligence
@@ -161,7 +171,28 @@ export default function StayPage() {
         </div>
 
         {/* Temple Etiquette & The Granite Sock Protocol */}
-        <div className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6 md:p-8 space-y-6">
+        <div className="bg-neutral-900/80 border border-neutral-800 rounded-3xl p-6 md:p-8 space-y-6 overflow-hidden">
+          <div className="relative h-44 sm:h-52 w-full overflow-hidden rounded-2xl bg-neutral-950 border border-emerald-500/20 group">
+            <img
+              src={ISLAND_IMAGES.kandyToothTemple.url}
+              alt={ISLAND_IMAGES.kandyToothTemple.alt}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+            <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-bold text-amber-300">
+              🏛️ Sri Dalada Maligawa, Kandy
+            </div>
+            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-xs">
+              <span className="font-bold text-white">
+                Sacred Living Heritage Protocols
+              </span>
+              <span className="text-emerald-300 font-mono text-[11px] bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30">
+                Mandatory Etiquette
+              </span>
+            </div>
+          </div>
+
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
               <Footprints size={22} />
@@ -233,7 +264,28 @@ export default function StayPage() {
         </div>
 
         {/* Ethical Wildlife Safaris */}
-        <div className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-6 md:p-8 space-y-4">
+        <div className="bg-neutral-900/80 border border-neutral-800 rounded-3xl p-6 md:p-8 space-y-6 overflow-hidden">
+          <div className="relative h-44 sm:h-52 w-full overflow-hidden rounded-2xl bg-neutral-950 border border-amber-500/20 group">
+            <img
+              src={ISLAND_IMAGES.wildElephants.url}
+              alt={ISLAND_IMAGES.wildElephants.alt}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+            <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-bold text-amber-300">
+              🐘 Udawalawe & Minneriya Wild Corridors
+            </div>
+            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-xs">
+              <span className="font-bold text-white">
+                Wild Herds, Zero Captivity
+              </span>
+              <span className="text-amber-300 font-mono text-[11px] bg-amber-950/80 px-2 py-0.5 rounded border border-amber-500/30">
+                Ethical Safaris Only
+              </span>
+            </div>
+          </div>
+
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
