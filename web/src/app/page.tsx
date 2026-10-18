@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import Navbar from '@/components/navigation/Navbar';
 import { ISLAND_IMAGES } from '@/data/island_images';
+import JourneyRailTimeline from '@/components/journey/JourneyRailTimeline';
 
 // Stations data for interactive train scrubber
 const STATIONS = [
@@ -463,6 +464,22 @@ export default function CinematicLandingPage() {
             <p className="text-xs sm:text-sm text-gray-300 mt-2">
               Overseas travel in Sri Lanka requires local ground truth. Guided navigation across the 4 stages of your journey, backed by timestamped verification receipts.
             </p>
+          </div>
+
+          {/* Interactive Sri Lankan Railway Journey Timeline */}
+          <div className="mb-12">
+            <JourneyRailTimeline />
+          </div>
+
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-xl font-bold text-white font-serif">
+                Direct Phase Launchpads & Hubs
+              </h3>
+              <p className="text-xs text-neutral-400">
+                Detailed field guides and calculators for each phase of your journey.
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

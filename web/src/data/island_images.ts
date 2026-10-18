@@ -105,3 +105,4 @@ export const ISLAND_IMAGES: Record<string, IslandImage> = {
     alt: 'Crystal turquoise waters and palm-fringed tropical beach in Sri Lanka',
   },
 };
+
