@@ -2,7 +2,13 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Compass, ArrowRight, Volume2, VolumeX } from 'lucide-react';
+import { 
+  Compass, 
+  ArrowRight, 
+  Volume2, 
+  VolumeX, 
+  Tag
+} from 'lucide-react';
 
 // Stations data for interactive train scrubber
 const STATIONS = [
@@ -304,13 +310,24 @@ export default function CinematicLandingPage() {
             </div>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-gray-300">
-            <Link href="/itinerary" className="hover:text-emerald-400 transition-colors">Itineraries</Link>
-            <Link href="/train" className="hover:text-emerald-400 transition-colors">Scenic Train</Link>
-            <Link href="/wildlife" className="hover:text-emerald-400 transition-colors">Safaris & Whales</Link>
-            <Link href="/culture" className="hover:text-emerald-400 transition-colors">Culture & Poya</Link>
-            <Link href="/food" className="hover:text-emerald-400 transition-colors">Food Guide</Link>
-            <Link href="/toolkit" className="hover:text-emerald-400 transition-colors">Field Toolkit</Link>
+          <nav className="hidden lg:flex items-center gap-5 text-xs font-bold text-gray-300">
+            <Link href="/arrival" className="hover:text-emerald-400 transition-colors flex items-center gap-1">
+              <span>✈️</span><span>Arrive</span>
+            </Link>
+            <Link href="/transport" className="hover:text-teal-400 transition-colors flex items-center gap-1">
+              <span>🛺</span><span>Move</span>
+            </Link>
+            <Link href="/stay" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+              <span>☀️</span><span>Stay</span>
+            </Link>
+            <Link href="/departure" className="hover:text-rose-400 transition-colors flex items-center gap-1">
+              <span>🛫</span><span>Leave</span>
+            </Link>
+            <Link href="/prices" className="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/25 transition-all">
+              Fair Prices
+            </Link>
+            <Link href="/itinerary" className="hover:text-white transition-colors">Itineraries</Link>
+            <Link href="/toolkit" className="hover:text-white transition-colors">Toolkit</Link>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -377,7 +394,7 @@ export default function CinematicLandingPage() {
           </p>
 
           {/* Primary Action Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-12">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-8">
             <Link
               href="/explore"
               className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-400 text-[#032317] rounded-2xl text-sm font-black shadow-xl shadow-emerald-500/25 hover:scale-105 transition-all flex items-center gap-2"
@@ -393,6 +410,45 @@ export default function CinematicLandingPage() {
             >
               <span>🗺️</span>
               <span>Multi-Day Itinerary Planner</span>
+            </Link>
+          </div>
+
+          {/* Quick Journey Copilot Action Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+            <Link
+              href="/arrival"
+              className="px-3.5 py-1.5 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+            >
+              <span>✈️</span>
+              <span>I&apos;m Landing at CMB</span>
+            </Link>
+            <Link
+              href="/transport"
+              className="px-3.5 py-1.5 rounded-full bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+            >
+              <span>🛺</span>
+              <span>Fair Tuk-Tuk Meter</span>
+            </Link>
+            <Link
+              href="/stay"
+              className="px-3.5 py-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+            >
+              <span>☀️</span>
+              <span>Where is it Sunny?</span>
+            </Link>
+            <Link
+              href="/departure"
+              className="px-3.5 py-1.5 rounded-full bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+            >
+              <span>🛫</span>
+              <span>I&apos;m Leaving for CMB</span>
+            </Link>
+            <Link
+              href="/prices"
+              className="px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-neutral-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+            >
+              <Tag size={12} className="text-emerald-400" />
+              <span>Verified Price Database</span>
             </Link>
           </div>
 
@@ -434,6 +490,157 @@ export default function CinematicLandingPage() {
               <span>✨</span>
               <span>Firefly Night</span>
             </button>
+          </div>
+        </section>
+
+        {/* 3.5 The Arrival-to-Departure Journey Copilot Bento Grid */}
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <span className="text-xs font-black uppercase tracking-wider text-emerald-400 block mb-2">
+              End-to-End Traveler Navigation
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-white font-serif">
+              Land Ready. Move Smart. Live Deep. Leave on Time.
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-300 mt-2">
+              Overseas travel in Sri Lanka requires local ground truth. Guided navigation across the 4 stages of your journey, backed by timestamped verification receipts.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Phase 1: Arrive */}
+            <Link
+              href="/arrival"
+              className="bg-neutral-900/80 border border-emerald-500/30 hover:border-emerald-400/60 p-6 rounded-3xl transition-all hover:scale-[1.02] flex flex-col justify-between space-y-4 group shadow-xl"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-2xl p-2.5 rounded-2xl bg-emerald-500/15 text-emerald-400 inline-block">
+                    ✈️
+                  </span>
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                    Phase 1
+                  </span>
+                </div>
+                <h3 className="text-lg font-black text-white group-hover:text-emerald-300 transition-colors">
+                  Arrive at CMB
+                </h3>
+                <p className="text-xs text-neutral-300 mt-2 leading-relaxed">
+                  Avoid $50 taxi touts. Fee-free BOC/Commercial ATMs, Dialog 50GB SIM counter, PickMe outer bay, and Negombo first-night strategy.
+                </p>
+              </div>
+              <div className="pt-3 border-t border-neutral-800 text-xs font-bold text-emerald-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                <span>Arrival Copilot Guide</span>
+                <ArrowRight size={13} />
+              </div>
+            </Link>
+
+            {/* Phase 2: Move */}
+            <Link
+              href="/transport"
+              className="bg-neutral-900/80 border border-teal-500/30 hover:border-teal-400/60 p-6 rounded-3xl transition-all hover:scale-[1.02] flex flex-col justify-between space-y-4 group shadow-xl"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-2xl p-2.5 rounded-2xl bg-teal-500/15 text-teal-400 inline-block">
+                    🛺
+                  </span>
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-teal-500/20 text-teal-300">
+                    Phase 2
+                  </span>
+                </div>
+                <h3 className="text-lg font-black text-white group-hover:text-teal-300 transition-colors">
+                  Move Across Island
+                </h3>
+                <p className="text-xs text-neutral-300 mt-2 leading-relaxed">
+                  Mountain 24 km/h speed physics, Kandy-Ella scenic train seat guide, fuel-benchmarked tuk-tuk meter, and mandatory AAC self-drive rules.
+                </p>
+              </div>
+              <div className="pt-3 border-t border-neutral-800 text-xs font-bold text-teal-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                <span>Transport & Speed Physics</span>
+                <ArrowRight size={13} />
+              </div>
+            </Link>
+
+            {/* Phase 3: Stay */}
+            <Link
+              href="/stay"
+              className="bg-neutral-900/80 border border-amber-500/30 hover:border-amber-400/60 p-6 rounded-3xl transition-all hover:scale-[1.02] flex flex-col justify-between space-y-4 group shadow-xl"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-2xl p-2.5 rounded-2xl bg-amber-500/15 text-amber-400 inline-block">
+                    ☀️
+                  </span>
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">
+                    Phase 3
+                  </span>
+                </div>
+                <h3 className="text-lg font-black text-white group-hover:text-amber-300 transition-colors">
+                  Stay & Cultural Rules
+                </h3>
+                <p className="text-xs text-neutral-300 mt-2 leading-relaxed">
+                  Dual-monsoon compass (where it is sunny right now), burning temple granite socks hack, Poya full-moon alcohol laws, and ethical safaris.
+                </p>
+              </div>
+              <div className="pt-3 border-t border-neutral-800 text-xs font-bold text-amber-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                <span>Stay & Living Intelligence</span>
+                <ArrowRight size={13} />
+              </div>
+            </Link>
+
+            {/* Phase 4: Leave */}
+            <Link
+              href="/departure"
+              className="bg-neutral-900/80 border border-rose-500/30 hover:border-rose-400/60 p-6 rounded-3xl transition-all hover:scale-[1.02] flex flex-col justify-between space-y-4 group shadow-xl"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-2xl p-2.5 rounded-2xl bg-rose-500/15 text-rose-400 inline-block">
+                    🛫
+                  </span>
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-rose-500/20 text-rose-300">
+                    Phase 4
+                  </span>
+                </div>
+                <h3 className="text-lg font-black text-white group-hover:text-rose-300 transition-colors">
+                  Leave on Time
+                </h3>
+                <p className="text-xs text-neutral-300 mt-2 leading-relaxed">
+                  Interactive flight leave-by calculator, CMB outdoor baggage security line warning, and saving 70% on Ceylon tea at local supermarkets.
+                </p>
+              </div>
+              <div className="pt-3 border-t border-neutral-800 text-xs font-bold text-rose-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                <span>Departure Copilot</span>
+                <ArrowRight size={13} />
+              </div>
+            </Link>
+          </div>
+
+          {/* Fair-Price Meter Strip */}
+          <div className="mt-5 bg-gradient-to-r from-emerald-950/40 via-neutral-900 to-teal-950/40 border border-emerald-500/30 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+                <Tag size={18} />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                  <span>Sri Lanka Fair-Price Meter & Ground Truth</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">✓ 90-Day Freshness</span>
+                </h4>
+                <p className="text-xs text-neutral-300">
+                  Searchable database of honest rates for SIMs, Colombo airport cabs, train tickets, tea, and safaris with source receipts.
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/prices"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 shadow-md"
+            >
+              <span>Explore Verified Prices</span>
+              <ArrowRight size={13} />
+            </Link>
           </div>
         </section>
 

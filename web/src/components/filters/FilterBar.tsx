@@ -102,12 +102,22 @@ export default function FilterBar({
 
         {/* Global Navigation Links */}
         <nav className="hidden lg:flex items-center gap-1 bg-white/5 border border-white/10 rounded-xl px-2 py-1 text-xs font-semibold text-gray-300">
-          <Link href="/" className="px-2 py-0.5 rounded-lg hover:text-white hover:bg-white/5 transition-all">Home</Link>
+          <Link href="/arrival" className="px-2 py-0.5 rounded-lg hover:text-emerald-400 hover:bg-white/5 transition-all flex items-center gap-1">
+            <span>✈️</span><span>Arrive</span>
+          </Link>
+          <Link href="/transport" className="px-2 py-0.5 rounded-lg hover:text-teal-400 hover:bg-white/5 transition-all flex items-center gap-1">
+            <span>🛺</span><span>Move</span>
+          </Link>
+          <Link href="/stay" className="px-2 py-0.5 rounded-lg hover:text-amber-400 hover:bg-white/5 transition-all flex items-center gap-1">
+            <span>☀️</span><span>Stay</span>
+          </Link>
+          <Link href="/departure" className="px-2 py-0.5 rounded-lg hover:text-rose-400 hover:bg-white/5 transition-all flex items-center gap-1">
+            <span>🛫</span><span>Leave</span>
+          </Link>
+          <Link href="/prices" className="px-2.5 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold hover:bg-emerald-500/30 transition-all">
+            Fair Prices
+          </Link>
           <Link href="/itinerary" className="px-2 py-0.5 rounded-lg hover:text-white hover:bg-white/5 transition-all">Itineraries</Link>
-          <Link href="/train" className="px-2 py-0.5 rounded-lg hover:text-white hover:bg-white/5 transition-all">Train</Link>
-          <Link href="/wildlife" className="px-2 py-0.5 rounded-lg hover:text-white hover:bg-white/5 transition-all">Safaris</Link>
-          <Link href="/culture" className="px-2 py-0.5 rounded-lg hover:text-white hover:bg-white/5 transition-all">Culture</Link>
-          <Link href="/food" className="px-2 py-0.5 rounded-lg hover:text-white hover:bg-white/5 transition-all">Food</Link>
           <Link href="/toolkit" className="px-2 py-0.5 rounded-lg hover:text-white hover:bg-white/5 transition-all">Toolkit</Link>
         </nav>
 
