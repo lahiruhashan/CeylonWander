@@ -9,6 +9,7 @@ import {
   VolumeX, 
   Tag
 } from 'lucide-react';
+import Navbar from '@/components/navigation/Navbar';
 
 // Stations data for interactive train scrubber
 const STATIONS = [
@@ -293,76 +294,32 @@ export default function CinematicLandingPage() {
         envTheme === 'golden' ? 'bg-amber-500' : envTheme === 'monsoon' ? 'bg-sky-500' : envTheme === 'night' ? 'bg-purple-600' : 'bg-emerald-500'
       }`} />
 
-      {/* 2. Sticky Glass Navigation */}
-      <header className="sticky top-0 z-50 bg-[#061c14]/75 backdrop-blur-xl border-b border-white/10 shadow-2xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-[#032317] font-black text-sm shadow-md">
-              CC
-            </div>
-            <div>
-              <span className="text-base font-extrabold text-white tracking-tight block leading-none">
-                CeylonCopilot <span className="text-xs">🇱🇰</span>
-              </span>
-              <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
-                Smart Travel Assistant
-              </span>
-            </div>
-          </Link>
-
-          <nav className="hidden lg:flex items-center gap-5 text-xs font-bold text-gray-300">
-            <Link href="/arrival" className="hover:text-emerald-400 transition-colors flex items-center gap-1">
-              <span>✈️</span><span>Arrive</span>
-            </Link>
-            <Link href="/transport" className="hover:text-teal-400 transition-colors flex items-center gap-1">
-              <span>🛺</span><span>Move</span>
-            </Link>
-            <Link href="/stay" className="hover:text-amber-400 transition-colors flex items-center gap-1">
-              <span>☀️</span><span>Stay</span>
-            </Link>
-            <Link href="/departure" className="hover:text-rose-400 transition-colors flex items-center gap-1">
-              <span>🛫</span><span>Leave</span>
-            </Link>
-            <Link href="/prices" className="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/25 transition-all">
-              Fair Prices
-            </Link>
-            <Link href="/itinerary" className="hover:text-white transition-colors">Itineraries</Link>
-            <Link href="/toolkit" className="hover:text-white transition-colors">Toolkit</Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            {/* Audio Ambiance Synthesizer Button */}
-            <button
-              onClick={toggleSoundscape}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all flex items-center gap-1.5 shadow-sm ${
-                isPlayingAudio
-                  ? 'bg-emerald-500/25 border-emerald-400 text-emerald-300 shadow-emerald-500/30'
-                  : 'bg-white/5 border-white/15 text-gray-300 hover:bg-white/10'
-              }`}
-            >
-              {isPlayingAudio ? (
-                <>
-                  <Volume2 size={13} className="text-emerald-400 animate-pulse" />
-                  <span>Ambiance Playing</span>
-                </>
-              ) : (
-                <>
-                  <VolumeX size={13} />
-                  <span>🎧 Island Audio</span>
-                </>
-              )}
-            </button>
-
-            <Link
-              href="/explore"
-              className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-400 text-[#032317] rounded-xl text-xs font-black shadow-lg shadow-emerald-500/20 hover:scale-105 transition-all flex items-center gap-1.5"
-            >
-              <Compass size={13} />
-              <span>Launch Map</span>
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* 2. Unified Navigation Bar */}
+      <Navbar
+        pageSubtitle="Smart Travel Copilot"
+        actionSlot={
+          <button
+            onClick={toggleSoundscape}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all flex items-center gap-1.5 shadow-sm ${
+              isPlayingAudio
+                ? 'bg-emerald-500/25 border-emerald-400 text-emerald-300 shadow-emerald-500/30'
+                : 'bg-white/5 border-white/15 text-gray-300 hover:bg-white/10'
+            }`}
+          >
+            {isPlayingAudio ? (
+              <>
+                <Volume2 size={13} className="text-emerald-400 animate-pulse" />
+                <span className="hidden sm:inline">Ambiance Playing</span>
+              </>
+            ) : (
+              <>
+                <VolumeX size={13} />
+                <span className="hidden sm:inline">🎧 Audio</span>
+              </>
+            )}
+          </button>
+        }
+      />
 
       {/* 3. Cinematic Hero Section */}
       <main className="relative z-10">

@@ -271,3 +271,4 @@ export function isPriceStale(verifiedDateStr: string): boolean {
 export function formatLkrToUsd(lkrAmount: number, lkrPerUsd: number = 305): string {
   return `$${(lkrAmount / lkrPerUsd).toFixed(2)}`;
 }
+

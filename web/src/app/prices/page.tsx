@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { 
   Search, 
   HelpCircle,
   ShieldCheck,
   Tag
 } from 'lucide-react';
+import Navbar from '@/components/navigation/Navbar';
 import VerifiedBadge from '@/components/ui/VerifiedBadge';
 import { VERIFIED_PRICES } from '@/data/verified_prices_data';
 
@@ -64,41 +64,7 @@ export default function PricesPage() {
   return (
     <div className="min-h-screen bg-[#05140e] text-neutral-200">
       {/* Top Banner Navigation */}
-      <header className="border-b border-white/10 bg-[#081c14]/90 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-neutral-950 font-black text-sm shadow-md">
-              CC
-            </div>
-            <div>
-              <span className="font-extrabold text-base text-white tracking-tight group-hover:text-emerald-400 transition-colors">
-                CeylonCopilot
-              </span>
-              <span className="text-[10px] text-emerald-400 font-bold block -mt-1 tracking-wider uppercase">
-                Fair-Price Meter · Field Database
-              </span>
-            </div>
-          </Link>
-
-          <nav className="flex items-center gap-2 sm:gap-4 text-xs font-semibold">
-            <Link href="/arrival" className="text-neutral-400 hover:text-white transition-colors hidden sm:inline">
-              Arrive
-            </Link>
-            <Link href="/transport" className="text-neutral-400 hover:text-white transition-colors hidden sm:inline">
-              Move
-            </Link>
-            <Link href="/stay" className="text-neutral-400 hover:text-white transition-colors hidden sm:inline">
-              Stay
-            </Link>
-            <Link href="/departure" className="text-neutral-400 hover:text-white transition-colors hidden sm:inline">
-              Leave
-            </Link>
-            <Link href="/" className="px-3 py-1.5 rounded-lg bg-neutral-800 text-neutral-300 hover:text-white hover:bg-neutral-700 transition-all font-bold">
-              Home Map
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Navbar pageSubtitle="Fair-Price Meter" />
 
       {/* Hero Header */}
       <section className="py-10 md:py-14 border-b border-white/10 relative overflow-hidden">

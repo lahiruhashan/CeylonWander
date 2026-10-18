@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Compass, Calendar, Clock, MapPin, ExternalLink, Copy, Check, ArrowRight, Sparkles, AlertTriangle } from 'lucide-react';
+import Navbar from '@/components/navigation/Navbar';
 
 type DurationDays = 3 | 7 | 10 | 14 | 21;
 
@@ -273,45 +274,8 @@ export default function ItineraryPage() {
       <div className="fixed top-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-[140px] pointer-events-none" />
 
-      {/* Sticky Cinematic Navigation */}
-      <header className="sticky top-0 z-50 bg-[#061c14]/80 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-[#032317] font-black text-xs shadow-md">
-              CC
-            </div>
-            <div>
-              <span className="text-sm font-extrabold text-white tracking-tight block leading-none">
-                CeylonCopilot <span className="text-xs">🇱🇰</span>
-              </span>
-              <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
-                Itinerary Engine
-              </span>
-            </div>
-          </Link>
-
-          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-gray-300">
-            <Link href="/" className="hover:text-emerald-400 transition-colors">Home</Link>
-            <Link href="/explore" className="hover:text-emerald-400 transition-colors">Explorer Map</Link>
-            <Link href="/itinerary" className="text-emerald-400">Itineraries</Link>
-            <Link href="/train" className="hover:text-emerald-400 transition-colors">Scenic Train</Link>
-            <Link href="/wildlife" className="hover:text-emerald-400 transition-colors">Safaris</Link>
-            <Link href="/culture" className="hover:text-emerald-400 transition-colors">Culture & Poya</Link>
-            <Link href="/food" className="hover:text-emerald-400 transition-colors">Food Guide</Link>
-            <Link href="/toolkit" className="hover:text-emerald-400 transition-colors">Field Toolkit</Link>
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <Link
-              href="/explore"
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-[#032317] rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-1.5"
-            >
-              <Compass size={13} />
-              <span>Launch Map</span>
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Unified Navigation */}
+      <Navbar pageSubtitle="Itinerary Engine" />
 
       {/* Hero Section */}
       <section className="pt-12 pb-16 px-4 sm:px-6 max-w-5xl mx-auto text-center relative z-10">

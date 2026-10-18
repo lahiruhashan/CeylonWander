@@ -10,6 +10,7 @@ import {
   HelpCircle
 } from 'lucide-react';
 import AirportArrivalGuide from '@/components/journey/AirportArrivalGuide';
+import Navbar from '@/components/navigation/Navbar';
 
 export const metadata: Metadata = {
   title: 'CMB Airport Arrival Guide Sri Lanka | Land Ready Copilot',
@@ -61,38 +62,7 @@ export default function ArrivalPage() {
   return (
     <div className="min-h-screen bg-[#05140e] text-neutral-200">
       {/* Top Banner Navigation */}
-      <header className="border-b border-white/10 bg-[#081c14]/90 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-neutral-950 font-black text-sm shadow-md">
-              CC
-            </div>
-            <div>
-              <span className="font-extrabold text-base text-white tracking-tight group-hover:text-emerald-400 transition-colors">
-                CeylonCopilot
-              </span>
-              <span className="text-[10px] text-emerald-400 font-bold block -mt-1 tracking-wider uppercase">
-                Arrival Guide · Phase 1
-              </span>
-            </div>
-          </Link>
-
-          <nav className="flex items-center gap-2 sm:gap-4 text-xs font-semibold">
-            <Link href="/transport" className="text-neutral-400 hover:text-white transition-colors hidden sm:inline">
-              Move
-            </Link>
-            <Link href="/stay" className="text-neutral-400 hover:text-white transition-colors hidden sm:inline">
-              Stay
-            </Link>
-            <Link href="/departure" className="text-neutral-400 hover:text-white transition-colors hidden sm:inline">
-              Leave
-            </Link>
-            <Link href="/prices" className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 transition-all font-bold">
-              Fair Prices
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Navbar pageSubtitle="Arrival Guide · Phase 1" />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden py-10 md:py-16 border-b border-white/10">
