@@ -781,8 +781,8 @@ export default function CinematicLandingPage() {
               <div>
                 <div className="relative h-40 w-full overflow-hidden rounded-2xl mb-4 bg-neutral-950">
                   <img
-                    src={ISLAND_IMAGES.arrivalNegombo.url}
-                    alt={ISLAND_IMAGES.arrivalNegombo.alt}
+                    src={ISLAND_IMAGES.tuktuk.url}
+                    alt={ISLAND_IMAGES.tuktuk.alt}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                     loading="lazy"
                   />

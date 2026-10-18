@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Compass, Calendar, Clock, MapPin, ExternalLink, Copy, Check, ArrowRight, Sparkles, AlertTriangle } from 'lucide-react';
 import Navbar from '@/components/navigation/Navbar';
+import ItineraryInteractiveMap from '@/components/itinerary/ItineraryInteractiveMap';
 
 type DurationDays = 3 | 7 | 10 | 14 | 21;
 
@@ -251,9 +252,49 @@ const FAQ_LIST = [
 
 export default function ItineraryPage() {
   const [selectedDuration, setSelectedDuration] = useState<DurationDays>(10);
+  const [activeDay, setActiveDay] = useState<number>(1);
   const [copied, setCopied] = useState(false);
 
   const currentPlan = ITINERARIES[selectedDuration];
+
+  // Reset active day to Day 1 when switching duration
+  useEffect(() => {
+    setActiveDay(1);
+  }, [selectedDuration]);
+
+  // Scroll spy: follow the active day as the user scrolls
+  useEffect(() => {
+    const handleScroll = () => {
+      const dayCards = document.querySelectorAll<HTMLElement>('[data-itinerary-day]');
+      if (!dayCards.length) return;
+
+      const viewportThreshold = window.innerHeight * 0.4;
+      let matchedDay = 1;
+
+      dayCards.forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        if (rect.top <= viewportThreshold) {
+          const dayNum = Number(card.getAttribute('data-itinerary-day'));
+          if (dayNum) matchedDay = dayNum;
+        }
+      });
+
+      setActiveDay(matchedDay);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Run once on mount / tab change
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [selectedDuration]);
+
+  const handleSelectDay = (dayNum: number) => {
+    setActiveDay(dayNum);
+    const element = document.getElementById(`itinerary-day-${dayNum}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
 
   const handleCopy = () => {
     let text = `${currentPlan.title} (${selectedDuration} Days)\n${currentPlan.vibe}\n\n`;
@@ -315,7 +356,7 @@ export default function ItineraryPage() {
       </section>
 
       {/* Main Itinerary Content */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-20 relative z-10">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20 relative z-10">
         {/* Overview Banner Card */}
         <div className="bg-gradient-to-br from-[#0c2e20] to-[#061810] border border-emerald-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl mb-10">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6 mb-6">
@@ -373,81 +414,129 @@ export default function ItineraryPage() {
           </div>
         </div>
 
-        {/* Day-by-Day Timeline */}
-        <div className="space-y-4 mb-16">
-          <h3 className="text-sm font-black uppercase tracking-wider text-emerald-400 mb-6 flex items-center gap-2">
-            <Calendar size={16} />
-            <span>Full Day-by-Day Stage Breakdown ({selectedDuration} Days)</span>
-          </h3>
+        {/* 2-Column Split: Day-by-Day Timeline (Left) & Sticky Interactive Sri Lanka Map (Right) */}
+        <div className="lg:grid lg:grid-cols-12 gap-8 items-start mb-16">
+          {/* Day-by-Day Timeline (7 cols) */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-black uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+                <Calendar size={16} />
+                <span>Day-by-Day Stages ({selectedDuration} Days)</span>
+              </h3>
+              <span className="text-[11px] text-amber-300 font-bold bg-amber-400/10 px-2.5 py-1 rounded-full border border-amber-400/20">
+                Active: Day {activeDay}
+              </span>
+            </div>
 
-          {currentPlan.days.map((d) => (
-            <div
-              key={d.day}
-              className="bg-[#0a2318]/70 border border-white/10 hover:border-emerald-500/50 rounded-3xl p-5 sm:p-6 backdrop-blur-md transition-all hover:shadow-xl hover:shadow-emerald-950/40 space-y-3"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-3">
-                <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-[#032317] font-black text-sm flex items-center justify-center shrink-0 shadow-md">
-                    {d.day}
-                  </span>
+            {currentPlan.days.map((d) => {
+              const isActive = d.day === activeDay;
+              return (
+                <div
+                  key={d.day}
+                  id={`itinerary-day-${d.day}`}
+                  data-itinerary-day={d.day}
+                  onClick={() => handleSelectDay(d.day)}
+                  className={`border rounded-3xl p-5 sm:p-6 backdrop-blur-md transition-all duration-300 cursor-pointer space-y-3 ${
+                    isActive
+                      ? 'bg-[#0d2d20] border-emerald-400 shadow-xl shadow-emerald-950/60 ring-2 ring-emerald-500/30'
+                      : 'bg-[#0a2318]/70 border-white/10 hover:border-emerald-500/40 hover:bg-[#0a271c]'
+                  }`}
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-3">
+                    <div className="flex items-center gap-3">
+                      <span className={`w-8 h-8 rounded-xl font-black text-sm flex items-center justify-center shrink-0 shadow-md transition-transform ${
+                        isActive
+                          ? 'bg-amber-400 text-amber-950 scale-105 ring-2 ring-amber-300/60'
+                          : 'bg-gradient-to-tr from-emerald-500 to-teal-400 text-[#032317]'
+                      }`}>
+                        {d.day}
+                      </span>
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className="font-black text-base text-white">{d.title}</h4>
+                          {isActive && (
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold uppercase tracking-wider border border-emerald-500/30">
+                              Viewing on Map
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-xs text-gray-400 font-semibold">{d.from} → {d.to}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="px-2.5 py-1 rounded-lg bg-black/40 text-gray-300 font-semibold border border-white/5 flex items-center gap-1">
+                        <Clock size={12} className="text-emerald-400" />
+                        <span>{d.driveTimeHours}</span>
+                      </span>
+                      <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 font-bold border border-emerald-500/20">
+                        ~{d.distanceKm} km
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Warnings and Stay info */}
+                  <div className="flex flex-wrap items-center gap-2 text-xs">
+                    {d.mountainWarning && (
+                      <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold flex items-center gap-1">
+                        <AlertTriangle size={12} />
+                        <span>Slow Mountain Switchbacks (~25-35 km/h)</span>
+                      </span>
+                    )}
+                    <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-gray-300 font-medium flex items-center gap-1">
+                      <MapPin size={12} className="text-emerald-400" />
+                      <span>Stay: <strong className="text-white">{d.overnight}</strong></span>
+                    </span>
+                  </div>
+
+                  {/* Highlights */}
                   <div>
-                    <h4 className="font-black text-base text-white">{d.title}</h4>
-                    <span className="text-xs text-gray-400 font-semibold">{d.from} → {d.to}</span>
+                    <span className="text-[10px] uppercase font-bold text-gray-400 block mb-1.5">
+                      Must-See Highlights:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {d.highlights.map((h, idx) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-emerald-200"
+                        >
+                          {h}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Insider Pro Tip */}
+                  <div className="bg-amber-400/10 border border-amber-400/20 rounded-2xl p-3 text-xs text-amber-200 flex items-start gap-2">
+                    <Sparkles size={14} className="text-amber-400 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-amber-300 font-bold">Local Insider Secret: </strong>
+                      {d.proTip}
+                    </div>
                   </div>
                 </div>
+              );
+            })}
+          </div>
 
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="px-2.5 py-1 rounded-lg bg-black/40 text-gray-300 font-semibold border border-white/5 flex items-center gap-1">
-                    <Clock size={12} className="text-emerald-400" />
-                    <span>{d.driveTimeHours}</span>
-                  </span>
-                  <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 font-bold border border-emerald-500/20">
-                    ~{d.distanceKm} km
-                  </span>
-                </div>
-              </div>
-
-              {/* Warnings and Stay info */}
-              <div className="flex flex-wrap items-center gap-2 text-xs">
-                {d.mountainWarning && (
-                  <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold flex items-center gap-1">
-                    <AlertTriangle size={12} />
-                    <span>Slow Mountain Switchbacks (~25-35 km/h)</span>
-                  </span>
-                )}
-                <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-gray-300 font-medium flex items-center gap-1">
-                  <MapPin size={12} className="text-emerald-400" />
-                  <span>Stay: <strong className="text-white">{d.overnight}</strong></span>
-                </span>
-              </div>
-
-              {/* Highlights */}
-              <div>
-                <span className="text-[10px] uppercase font-bold text-gray-400 block mb-1.5">
-                  Must-See Highlights:
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {d.highlights.map((h, idx) => (
-                    <span
-                      key={idx}
-                      className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-emerald-200"
-                    >
-                      {h}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Insider Pro Tip */}
-              <div className="bg-amber-400/10 border border-amber-400/20 rounded-2xl p-3 text-xs text-amber-200 flex items-start gap-2">
-                <Sparkles size={14} className="text-amber-400 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-amber-300 font-bold">Local Insider Secret: </strong>
-                  {d.proTip}
-                </div>
-              </div>
+          {/* Sticky Interactive Sri Lanka Map (5 cols) */}
+          <div className="lg:col-span-5 sticky top-24 self-start space-y-3 mt-8 lg:mt-0">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                <Compass size={14} />
+                <span>Live Route Tracking</span>
+              </span>
+              <span className="text-[11px] text-gray-400 font-mono">
+                Day {activeDay} of {selectedDuration}
+              </span>
             </div>
-          ))}
+
+            <ItineraryInteractiveMap
+              days={currentPlan.days}
+              activeDay={activeDay}
+              onSelectDay={handleSelectDay}
+            />
+          </div>
         </div>
 
         {/* SEO FAQ Section */}

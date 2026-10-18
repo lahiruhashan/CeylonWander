@@ -143,8 +143,8 @@ export default function DeparturePage() {
         <div className="bg-neutral-900/80 border border-neutral-800 rounded-3xl p-6 md:p-8 space-y-6 overflow-hidden">
           <div className="relative h-44 sm:h-52 w-full overflow-hidden rounded-2xl bg-neutral-950 border border-amber-500/20 group">
             <img
-              src={ISLAND_IMAGES.sriLankanCurry.url}
-              alt="Authentic Ceylon Tea, Spices and Souvenirs"
+              src={ISLAND_IMAGES.trainTeaHills.url}
+              alt="Authentic Ceylon Tea Plantations and Souvenirs"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
               loading="lazy"
             />
